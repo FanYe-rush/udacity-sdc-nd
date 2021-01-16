@@ -68,8 +68,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         
         if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
             MatrixXd hj = tools.CalculateJacobian(measurement_pack.raw_measurements_);
-            VectorXd current_p = hj.inverse() * measurement_pack.raw_measurements_;
-            first_measure << current_p(0), current_p(1), 0, 0;
+            first_measure = hj.inverse() * measurement_pack.raw_measurements_;
         }
         else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
             VectorXd current_p = measurement_pack.raw_measurements_;
@@ -102,6 +101,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     previous_timestamp_ = measurement_pack.timestamp_;
     
     // print the output
-    cout << "x_ = " << ekf_.x_ << endl;
-    cout << "P_ = " << ekf_.P_ << endl;
+//    cout << "x_ = " << ekf_.x_ << endl;
+//    cout << "P_ = " << ekf_.P_ << endl;
 }

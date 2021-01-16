@@ -50,6 +50,11 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     
     MatrixXd hj = MatrixXd(3,4);
     
+    if (qs1 < 0.000001) {
+        std::cout << "near 0 px^2+py^2 for jacobian" << std::endl;
+        return MatrixXd::Identity(3,4);
+    }
+    
     hj << pxq, pyq, 0, 0,
     -px/qs1, px/qs1, 0, 0,
     py*(vx*py-vy*px)/qs3, px*(vy*px-vx*py)/qs3,pxq,pyq;
