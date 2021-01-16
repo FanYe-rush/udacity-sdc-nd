@@ -1,5 +1,5 @@
 #include "kalman_filter.h"
-
+#include <iostream>
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -13,22 +13,37 @@ KalmanFilter::KalmanFilter() {}
 KalmanFilter::~KalmanFilter() {}
 
 void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_lidar_in, MatrixXd &R_radar_in, MatrixXd &Q_in) {
+                        MatrixXd &H_in, MatrixXd &R_lidar_in, MatrixXd &R_radar_in,
+                        float ax_noise_in, float ay_noise_in) {
     x_ = x_in;
     P_ = P_in;
     F_ = F_in;
     H_ = H_in;
     R_lidar_ = R_lidar_in;
     R_radar_ = R_radar_in;
-    Q_ = Q_in;
+    noise_ax = ax_noise_in;
+    noise_ay = ay_noise_in;
 }
 
 void KalmanFilter::Predict(float delta_T) {
-    F_[0,2] = delta_T;
-    F_[1,3] = delta_T;
+    MatrixXd Q = MatrixXd(4,4);
+    float dt2 = delta_T * delta_T;
+    float dt3 = dt2 * delta_T;
+    float dt4 = dt3 * delta_T;
+    
+    dt4 /= 4;
+    dt3 /= 2;
+    
+    Q << dt4*noise_ax,0,dt3*noise_ax,0,
+         0,dt4*noise_ay,0,dt3*noise_ay,
+         dt3*noise_ax,0,dt2*noise_ax,0,
+         0,dt3*noise_ay,0,dt2*noise_ay;
+    
+    F_(0,2) = delta_T;
+    F_(1,3) = delta_T;
     
     x_ = F_ * x_;
-    P_ = F_ * P_ * F_.transpose() + Q_;
+    P_ = F_ * P_ * F_.transpose() + Q;
 }
 
 void KalmanFilter::Update(const VectorXd &z, const bool isRadarData) {
@@ -47,4 +62,7 @@ void KalmanFilter::Update(const VectorXd &z, const bool isRadarData) {
     MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
     x_ = x_ + K * y;
     P_ = (I - K * H) * P_;
+    
+    std::cout << K << std::endl;
+    std::cout << H << std::endl;
 }
