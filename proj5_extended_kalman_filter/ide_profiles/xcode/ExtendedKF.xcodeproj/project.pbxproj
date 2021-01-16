@@ -1,0 +1,739 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		4D936A6FC7F04B12A70811F9 /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E4FAE3D35AB24C4C82C401E3 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				0FDE890A16EAC0E07A7123AC /* Generate CMakeFiles/ZERO_CHECK */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+		5FB0D45B86B54D18AB3EF3F0 /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CF2E7B8DF1A142D6BC5890B3 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				AF2351AED4649282D60D1612 /* Generate CMakeFiles/ALL_BUILD */,
+			);
+			dependencies = (
+				20DACF93F69F4F4BAB54D463 /* PBXTargetDependency */,
+				D6F086B82977450BBCCE4E0E /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		18F7F2726EF7466EA993F0BA /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.cpp */ = {isa = PBXBuildFile; fileRef = AC9D44316AD74870BE467D22 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.cpp */; };
+		46A61A1CE51A4DABB5FCDBC1 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.h */ = {isa = PBXBuildFile; fileRef = 7C0D0F4AADC34857BC639DFC /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.h */; };
+		483F17E7F0DE4693A5A4DBA1 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.h */ = {isa = PBXBuildFile; fileRef = 3D7AFE1A059B4C8EB4FB7963 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.h */; };
+		9DDBE7680E7C4A53ABB12353 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.cpp */ = {isa = PBXBuildFile; fileRef = 5D56E93E8C744E308D0E2B81 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.cpp */; };
+		DBABE73E4264407C8A2CAF4A /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.cpp */ = {isa = PBXBuildFile; fileRef = DE1AD1AA7D2C4D70B4614792 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.cpp */; };
+		EA7C9E36BCD64CD48EEB5BD7 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/main.cpp */ = {isa = PBXBuildFile; fileRef = 4CFF47478A1549549D2B781B /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/main.cpp */; };
+		EFD92B571C61442685A1C8EA /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.h */ = {isa = PBXBuildFile; fileRef = 7D6F3727EFC34D52BB054DD4 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.h */; };
+		F96B0CD2164548E38546907A /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = 47CF3EA175D04667AFFC5D7E /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		42004D4F54454F27AA1150AE /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Release;
+		};
+		8BB83B10DFAE4097AB318FFB /* MinSizeRel */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = MinSizeRel;
+		};
+		AE6D86560E834361A113164D /* RelWithDebInfo */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = RelWithDebInfo;
+		};
+		C9E1B061B8BE43D4B27EB154 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		344B6DF2B44C4FC8B22D739D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B80B33432E184FF681EA9373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D936A6FC7F04B12A70811F9;
+			remoteInfo = ZERO_CHECK;
+		};
+		6786FB255F234803ABAB5B74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B80B33432E184FF681EA9373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A36B2D52121465BB4437DD0;
+			remoteInfo = ExtendedKF;
+		};
+		FF8D53C19B9547C58F4ED721 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B80B33432E184FF681EA9373 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D936A6FC7F04B12A70811F9;
+			remoteInfo = ZERO_CHECK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1A91374628DC497AAEDEB92D /* ExtendedKF */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = ExtendedKF; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D7AFE1A059B4C8EB4FB7963 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = tools.h; path = src/tools.h; sourceTree = SOURCE_ROOT; };
+		47CF3EA175D04667AFFC5D7E /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		4CFF47478A1549549D2B781B /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
+		5D56E93E8C744E308D0E2B81 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = tools.cpp; path = src/tools.cpp; sourceTree = SOURCE_ROOT; };
+		7C0D0F4AADC34857BC639DFC /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = kalman_filter.h; path = src/kalman_filter.h; sourceTree = SOURCE_ROOT; };
+		7D6F3727EFC34D52BB054DD4 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = FusionEKF.h; path = src/FusionEKF.h; sourceTree = SOURCE_ROOT; };
+		823A493093FE4E17AB2ABE05 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		AC9D44316AD74870BE467D22 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = kalman_filter.cpp; path = src/kalman_filter.cpp; sourceTree = SOURCE_ROOT; };
+		DE1AD1AA7D2C4D70B4614792 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = FusionEKF.cpp; path = src/FusionEKF.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D0EDA9078C54437893C8169F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1ED4A521A70B48258E18AB81 /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				7D6F3727EFC34D52BB054DD4 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.h */,
+				7C0D0F4AADC34857BC639DFC /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.h */,
+				3D7AFE1A059B4C8EB4FB7963 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.h */,
+			);
+			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		24A89559440C4B548363CD77 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				F1BB2F5C80EA42BB8830DFB1 /* CMake Rules */,
+				823A493093FE4E17AB2ABE05 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		63D6292698FB4A21973040CF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A91374628DC497AAEDEB92D /* ExtendedKF */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		88376799C36B478EABFCAAC7 /* ExtendedKF */ = {
+			isa = PBXGroup;
+			children = (
+				A22C2C82E7C4427B9747D59D /* Source Files */,
+				1ED4A521A70B48258E18AB81 /* Header Files */,
+				47CF3EA175D04667AFFC5D7E /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/CMakeLists.txt */,
+			);
+			name = ExtendedKF;
+			sourceTree = "<group>";
+		};
+		9E076394815145898C3A51AD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A22C2C82E7C4427B9747D59D /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				DE1AD1AA7D2C4D70B4614792 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.cpp */,
+				AC9D44316AD74870BE467D22 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.cpp */,
+				4CFF47478A1549549D2B781B /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/main.cpp */,
+				5D56E93E8C744E308D0E2B81 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		F149C49F814443FA8434ACEC = {
+			isa = PBXGroup;
+			children = (
+				88376799C36B478EABFCAAC7 /* ExtendedKF */,
+				24A89559440C4B548363CD77 /* ALL_BUILD */,
+				63D6292698FB4A21973040CF /* Products */,
+				9E076394815145898C3A51AD /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F1BB2F5C80EA42BB8830DFB1 /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3A36B2D52121465BB4437DD0 /* ExtendedKF */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C34E32BC2966497E8E167E1E /* Build configuration list for PBXNativeTarget "ExtendedKF" */;
+			buildPhases = (
+				FA37B034B22A4744825D0122 /* Sources */,
+				D0EDA9078C54437893C8169F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E231591EDF24442594596639 /* PBXTargetDependency */,
+			);
+			name = ExtendedKF;
+			productName = ExtendedKF;
+			productReference = 1A91374628DC497AAEDEB92D /* ExtendedKF */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B80B33432E184FF681EA9373 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1230;
+			};
+			buildConfigurationList = 6795DDF9B9A0496A9D6F6222 /* Build configuration list for PBXProject "ExtendedKF" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				C9E1B061B8BE43D4B27EB154 /* Debug */,
+				42004D4F54454F27AA1150AE /* Release */,
+				8BB83B10DFAE4097AB318FFB /* MinSizeRel */,
+				AE6D86560E834361A113164D /* RelWithDebInfo */,
+			);
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 0;
+			mainGroup = F149C49F814443FA8434ACEC;
+			projectDirPath = ../../;
+			projectRoot = "";
+			targets = (
+				5FB0D45B86B54D18AB3EF3F0 /* ALL_BUILD */,
+				3A36B2D52121465BB4437DD0 /* ExtendedKF */,
+				4D936A6FC7F04B12A70811F9 /* ZERO_CHECK */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0FDE890A16EAC0E07A7123AC /* Generate CMakeFiles/ZERO_CHECK */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ZERO_CHECK";
+			outputPaths = (
+"/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeFiles/ZERO_CHECK"			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  make -f /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  make -f /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  make -f /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  make -f /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeScripts/ReRunCMake.make
+fi
+";
+			showEnvVarsInLog = 0;
+		};
+		3C0110FC8322DE7E50886E21 = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+		9B50530E35CC49C82C2FACCF = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+		AF2351AED4649282D60D1612 /* Generate CMakeFiles/ALL_BUILD */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ALL_BUILD";
+			outputPaths = (
+"/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/CMakeFiles/ALL_BUILD"			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode
+  echo Build\\ all\\ projects
+fi
+";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA37B034B22A4744825D0122 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DBABE73E4264407C8A2CAF4A /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/FusionEKF.cpp */,
+				18F7F2726EF7466EA993F0BA /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/kalman_filter.cpp */,
+				EA7C9E36BCD64CD48EEB5BD7 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/main.cpp */,
+				9DDBE7680E7C4A53ABB12353 /* /Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/src/tools.cpp */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		20DACF93F69F4F4BAB54D463 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3A36B2D52121465BB4437DD0 /* ExtendedKF */;
+			targetProxy = 6786FB255F234803ABAB5B74 /* PBXContainerItemProxy */;
+		};
+		D6F086B82977450BBCCE4E0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D936A6FC7F04B12A70811F9 /* ZERO_CHECK */;
+			targetProxy = 344B6DF2B44C4FC8B22D739D /* PBXContainerItemProxy */;
+		};
+		E231591EDF24442594596639 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D936A6FC7F04B12A70811F9 /* ZERO_CHECK */;
+			targetProxy = FF8D53C19B9547C58F4ED721 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		017D6955C68E4E2C8989E8F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		0CFF1B71F3FB4DFBA63236C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		2AD4F524FEB24787B191FDBD /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		2FA11AD157FA4F9287AF21F0 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk;
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/build";
+			};
+			name = RelWithDebInfo;
+		};
+		464905E246D443088CE3165C /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		4FDF65E3CE0B4120870BB499 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = ("$(inherited)");
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (/usr/local/include,/usr/local/opt/openssl/include);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/local/opt/openssl/lib /usr/local/Cellar/libuv/1*/lib";
+				LIBRARY_SEARCH_PATHS = ("/usr/local/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/lib,"/usr/local/opt/openssl/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/opt/openssl/lib,"/usr/local/Cellar/libuv/1*/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","/usr/local/Cellar/libuv/1*/lib","$(inherited)");
+				OTHER_CPLUSPLUSFLAGS = "-Wall        -DNDEBUG   -std=c++11";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lz","-lssl","-luv","-luWS");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ExtendedKF;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		8DC7962FA4DD45B687DA597C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		9CA4A91D00B34D089302BB2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk;
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/build";
+			};
+			name = Release;
+		};
+		9E8605380D354977B3AEEFCB /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk;
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/build";
+			};
+			name = MinSizeRel;
+		};
+		9E8FB5159A884D4CA824F991 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk;
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode/build";
+			};
+			name = Debug;
+		};
+		A18B9256150B43559CE1872D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		A6284CFD4AB14B3F82CBCF3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = ("$(inherited)");
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (/usr/local/include,/usr/local/opt/openssl/include);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/local/opt/openssl/lib /usr/local/Cellar/libuv/1*/lib";
+				LIBRARY_SEARCH_PATHS = ("/usr/local/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/lib,"/usr/local/opt/openssl/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/opt/openssl/lib,"/usr/local/Cellar/libuv/1*/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","/usr/local/Cellar/libuv/1*/lib","$(inherited)");
+				OTHER_CPLUSPLUSFLAGS = "-Wall     -DNDEBUG   -std=c++11";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lz","-lssl","-luv","-luWS");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ExtendedKF;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		BF9E6F8AA1E143A192B74453 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		D094ABBD6C52447BBF43CB3D /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		EC6A3BA99C61494EB12772A6 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = ("$(inherited)");
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (/usr/local/include,/usr/local/opt/openssl/include);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/local/opt/openssl/lib /usr/local/Cellar/libuv/1*/lib";
+				LIBRARY_SEARCH_PATHS = ("/usr/local/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/lib,"/usr/local/opt/openssl/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/opt/openssl/lib,"/usr/local/Cellar/libuv/1*/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","/usr/local/Cellar/libuv/1*/lib","$(inherited)");
+				OTHER_CPLUSPLUSFLAGS = "-Wall     -DNDEBUG   -std=c++11";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lz","-lssl","-luv","-luWS");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ExtendedKF;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		FB7ACCBCCAC84F61A6764F77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = ("$(inherited)");
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (/usr/local/include,/usr/local/opt/openssl/include);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/local/opt/openssl/lib /usr/local/Cellar/libuv/1*/lib";
+				LIBRARY_SEARCH_PATHS = ("/usr/local/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/lib,"/usr/local/opt/openssl/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",/usr/local/opt/openssl/lib,"/usr/local/Cellar/libuv/1*/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)","/usr/local/Cellar/libuv/1*/lib","$(inherited)");
+				OTHER_CPLUSPLUSFLAGS = "-Wall      -std=c++11";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","-lz","-lssl","-luv","-luWS");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ExtendedKF;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj5_extended_kalman_filter/ide_profiles/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6795DDF9B9A0496A9D6F6222 /* Build configuration list for PBXProject "ExtendedKF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E8FB5159A884D4CA824F991 /* Debug */,
+				9CA4A91D00B34D089302BB2A /* Release */,
+				9E8605380D354977B3AEEFCB /* MinSizeRel */,
+				2FA11AD157FA4F9287AF21F0 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C34E32BC2966497E8E167E1E /* Build configuration list for PBXNativeTarget "ExtendedKF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB7ACCBCCAC84F61A6764F77 /* Debug */,
+				A6284CFD4AB14B3F82CBCF3E /* Release */,
+				EC6A3BA99C61494EB12772A6 /* MinSizeRel */,
+				4FDF65E3CE0B4120870BB499 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CF2E7B8DF1A142D6BC5890B3 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				017D6955C68E4E2C8989E8F1 /* Debug */,
+				8DC7962FA4DD45B687DA597C /* Release */,
+				D094ABBD6C52447BBF43CB3D /* MinSizeRel */,
+				2AD4F524FEB24787B191FDBD /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E4FAE3D35AB24C4C82C401E3 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A18B9256150B43559CE1872D /* Debug */,
+				0CFF1B71F3FB4DFBA63236C0 /* Release */,
+				BF9E6F8AA1E143A192B74453 /* MinSizeRel */,
+				464905E246D443088CE3165C /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B80B33432E184FF681EA9373 /* Project object */;
+}
