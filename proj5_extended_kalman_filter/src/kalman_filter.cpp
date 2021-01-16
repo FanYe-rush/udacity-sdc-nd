@@ -13,29 +13,38 @@ KalmanFilter::KalmanFilter() {}
 KalmanFilter::~KalmanFilter() {}
 
 void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
-  x_ = x_in;
-  P_ = P_in;
-  F_ = F_in;
-  H_ = H_in;
-  R_ = R_in;
-  Q_ = Q_in;
+                        MatrixXd &H_in, MatrixXd &R_lidar_in, MatrixXd &R_radar_in, MatrixXd &Q_in) {
+    x_ = x_in;
+    P_ = P_in;
+    F_ = F_in;
+    H_ = H_in;
+    R_lidar_ = R_lidar_in;
+    R_radar_ = R_radar_in;
+    Q_ = Q_in;
 }
 
-void KalmanFilter::Predict() {
-  /**
-   * TODO: predict the state
-   */
+void KalmanFilter::Predict(float delta_T) {
+    F_[0,2] = delta_T;
+    F_[1,3] = delta_T;
+    
+    x_ = F_ * x_;
+    P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-void KalmanFilter::Update(const VectorXd &z) {
-  /**
-   * TODO: update the state by using Kalman Filter equations
-   */
-}
-
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-   * TODO: update the state by using Extended Kalman Filter equations
-   */
+void KalmanFilter::Update(const VectorXd &z, const bool isRadarData) {
+    MatrixXd H = H_;
+    MatrixXd R = R_lidar_;
+    
+    if (isRadarData) {
+        H = tools.CalculateJacobian(x_);
+        R = R_radar_;
+    }
+    
+    VectorXd y = z - H * x_;
+    MatrixXd S = H * P_ * H.transpose() + R;
+    MatrixXd K = P_ * H.transpose() * S.inverse();
+    
+    MatrixXd I = MatrixXd::Identity(x_.size(), x_.size());
+    x_ = x_ + K * y;
+    P_ = (I - K * H) * P_;
 }
