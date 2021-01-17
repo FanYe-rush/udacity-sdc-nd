@@ -67,9 +67,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         VectorXd first_measure = VectorXd(4);
         
         if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-            MatrixXd hj = tools.CalculateJacobian(measurement_pack.raw_measurements_);
-            first_measure = hj.inverse() * measurement_pack.raw_measurements_;
+            
+            float angle = measurement_pack.raw_measurements_(1);
+            float dist = pow(measurement_pack.raw_measurements_(0), 2);
+            float radial_v = measurement_pack.raw_measurements_(2);
+            
+            float px = cos(angle) * dist;
+            float py = sin(angle) * dist;
+            float vx = cos(angle) * radial_v;
+            float vy = sin(angle) * radial_v;
+            
+            first_measure << px, py, vx, vy;
         }
+        
         else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
             VectorXd current_p = measurement_pack.raw_measurements_;
             first_measure << current_p(0), current_p(1), 0, 0;
