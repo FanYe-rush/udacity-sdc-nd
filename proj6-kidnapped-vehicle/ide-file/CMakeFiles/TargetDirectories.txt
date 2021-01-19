@@ -1,0 +1,3 @@
+/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj6-kidnapped-vehicle/ide-file/CMakeFiles/particle_filter.dir
+/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj6-kidnapped-vehicle/ide-file/CMakeFiles/ALL_BUILD.dir
+/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj6-kidnapped-vehicle/ide-file/CMakeFiles/ZERO_CHECK.dir
