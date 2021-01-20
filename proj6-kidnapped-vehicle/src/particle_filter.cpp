@@ -98,7 +98,7 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
     for (int i = 0; i < observations.size(); i++) {
         LandmarkObs ob = observations[i];
         
-        float min_dist = INT_MAX;
+        float min_dist = 100.0;
         float mx;
         float my;
         for (int j = 0; j < predicted.size(); j++) {
