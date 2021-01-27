@@ -8,6 +8,7 @@
 // for convenience
 using std::string;
 using std::vector;
+using std::to_string;
 
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
@@ -152,6 +153,50 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
   double y = seg_y + d*sin(perp_heading);
 
   return {x,y};
+}
+
+struct Car {
+  int id;
+  
+  double x;
+  double y;
+  double s;
+  double d;
+  double yaw;
+  double v;
+  
+  int lane = -1;
+  
+  string toString() {
+    return "id= " + to_string(id) + " x=" + to_string(x) + " y=" + to_string(y) +
+            "; s=" + to_string(s) + " d=" + to_string(d) +
+            "; yaw=" + to_string(yaw) + " v=" + to_string(v);
+  }
+  
+  int getLane() {
+    if (lane != -1) {
+      return lane;
+    }
+    // TODO: calculate the lane based on car position
+    lane = 1;
+  }
+};
+
+vector<Car> parseSensorFusionData(vector<vector<double>> data) {
+  vector<Car> result(data.size());
+  for (int i = 0; i < data.size(); i++) {
+    Car c;
+    c.id = (int) data[i][0];
+    c.x = data[i][1];
+    c.y = data[i][2];
+    c.s = data[i][3];
+    c.d = data[i][4];
+    c.yaw = data[i][5];
+    c.v = data[i][6];
+    
+    result[i] = c;
+  }
+  return result;
 }
 
 #endif  // HELPERS_H

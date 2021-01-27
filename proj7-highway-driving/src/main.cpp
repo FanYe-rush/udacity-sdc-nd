@@ -5,13 +5,18 @@
 #include <vector>
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
-#include "helpers.h"
 #include "json.hpp"
+#include "helpers.h"
+#include "behavior.h"
+#include "trajectory.h"
 
 // for convenience
 using nlohmann::json;
 using std::string;
 using std::vector;
+
+using std::cout;
+using std::endl;
 
 int main() {
   uWS::Hub h;
@@ -24,7 +29,10 @@ int main() {
   vector<double> map_waypoints_dy;
 
   // Waypoint map to read from
-  string map_file_ = "../data/highway_map.csv";
+  // TODO: revert back to relative path
+//  string map_file_ = "../data/highway_map.csv";
+  string map_file_ = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj7-highway-driving/data/highway_map.csv";
+  
   // The max s value before wrapping around the track back to 0
   double max_s = 6945.554;
 
@@ -49,9 +57,12 @@ int main() {
     map_waypoints_dx.push_back(d_x);
     map_waypoints_dy.push_back(d_y);
   }
+  
+  State current_state = KL;
+  int current_lane;
 
   h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
-               &map_waypoints_dx,&map_waypoints_dy]
+               &map_waypoints_dx,&map_waypoints_dy, current_state, current_lane]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -70,12 +81,14 @@ int main() {
           // j[1] is the data JSON object
           
           // Main car's localization Data
-          double car_x = j[1]["x"];
-          double car_y = j[1]["y"];
-          double car_s = j[1]["s"];
-          double car_d = j[1]["d"];
-          double car_yaw = j[1]["yaw"];
-          double car_speed = j[1]["speed"];
+          Car ego;
+          ego.id = -1;
+          ego.x = j[1]["x"];
+          ego.y = j[1]["y"];
+          ego.s = j[1]["s"];
+          ego.d = j[1]["d"];
+          ego.yaw = j[1]["yaw"];
+          ego.v = j[1]["speed"];
 
           // Previous path data given to the Planner
           auto previous_path_x = j[1]["previous_path_x"];
@@ -87,7 +100,13 @@ int main() {
           // Sensor Fusion Data, a list of all other cars on the same side 
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
-
+          
+          vector<Car> traffic = parseSensorFusionData(sensor_fusion);
+          
+//          for (int i = 0; i < traffic.size(); i++) {
+//            cout << traffic[i].d << endl;
+//          }
+          
           json msgJson;
 
           vector<double> next_x_vals;
@@ -97,8 +116,22 @@ int main() {
            * TODO: define a path made up of (x,y) points that the car will visit
            *   sequentially every .02 seconds
            */
-
-
+          
+          // behavior generate next state, or based on state generate target config?
+          State optimal = getOptimalNextState(ego, current_state, traffic);
+          
+          // trajectory gen generates a trajectory
+          
+          vector<Car> trajectory = generateTrajectory(ego, current_state, optimal, traffic, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+          
+          // populate trajectory into next_x_vals, next_y_vals
+          
+          for (int i = 0; i < trajectory.size(); i++) {
+            Car next = trajectory[i];
+            next_x_vals.push_back(next.x);
+            next_y_vals.push_back(next.y);
+          }
+          
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
 
