@@ -6,6 +6,8 @@
 #include <vector>
 
 // for convenience
+using std::cout;
+using std::endl;
 using std::string;
 using std::vector;
 using std::to_string;
@@ -155,9 +157,9 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
   return {x,y};
 }
 
-struct Car {
-  int id;
-  
+enum State {KL, PRLS, PLLS, RLS, LLS};
+
+struct Ego {
   double x;
   double y;
   double s;
@@ -165,20 +167,31 @@ struct Car {
   double yaw;
   double v;
   
-  int lane = -1;
+  State state;
+  
+  int get_lane() const {
+    return int((d-2) / 4);
+  }
+};
+
+struct Car {
+  int id = -1;
+  
+  double x;
+  double y;
+  double vx;
+  double vy;
+  double s;
+  double d;
   
   string toString() {
     return "id= " + to_string(id) + " x=" + to_string(x) + " y=" + to_string(y) +
-            "; s=" + to_string(s) + " d=" + to_string(d) +
-            "; yaw=" + to_string(yaw) + " v=" + to_string(v);
+            "; vx=" + to_string(vx) + " vy=" + to_string(vy) +
+            "; s=" + to_string(s) + " d=" + to_string(d);
   }
   
-  int getLane() {
-    if (lane != -1) {
-      return lane;
-    }
-    // TODO: calculate the lane based on car position
-    lane = 1;
+  int get_lane() const {
+    return int((d-2) / 4);
   }
 };
 
@@ -189,10 +202,10 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data) {
     c.id = (int) data[i][0];
     c.x = data[i][1];
     c.y = data[i][2];
-    c.s = data[i][3];
-    c.d = data[i][4];
-    c.yaw = data[i][5];
-    c.v = data[i][6];
+    c.vx = data[i][3];
+    c.vy = data[i][4];
+    c.s = data[i][5];
+    c.d = data[i][6];
     
     result[i] = c;
   }

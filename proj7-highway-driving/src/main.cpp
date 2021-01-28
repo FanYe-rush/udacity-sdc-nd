@@ -58,11 +58,11 @@ int main() {
     map_waypoints_dy.push_back(d_y);
   }
   
-  State current_state = KL;
-  int current_lane;
-
+  Ego ego;
+  ego.state = KL;
+  
   h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
-               &map_waypoints_dx,&map_waypoints_dy, current_state, current_lane]
+               &map_waypoints_dx,&map_waypoints_dy, &ego]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -81,8 +81,6 @@ int main() {
           // j[1] is the data JSON object
           
           // Main car's localization Data
-          Car ego;
-          ego.id = -1;
           ego.x = j[1]["x"];
           ego.y = j[1]["y"];
           ego.s = j[1]["s"];
@@ -103,10 +101,6 @@ int main() {
           
           vector<Car> traffic = parseSensorFusionData(sensor_fusion);
           
-//          for (int i = 0; i < traffic.size(); i++) {
-//            cout << traffic[i].d << endl;
-//          }
-          
           json msgJson;
 
           vector<double> next_x_vals;
@@ -118,11 +112,11 @@ int main() {
            */
           
           // behavior generate next state, or based on state generate target config?
-          State optimal = getOptimalNextState(ego, current_state, traffic);
+          State optimal = getOptimalNextState(ego, traffic);
           
           // trajectory gen generates a trajectory
           
-          vector<Car> trajectory = generateTrajectory(ego, current_state, optimal, traffic, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+          vector<Car> trajectory = generateTrajectory(ego, optimal, traffic, map_waypoints_s, map_waypoints_x, map_waypoints_y);
           
           // populate trajectory into next_x_vals, next_y_vals
           
