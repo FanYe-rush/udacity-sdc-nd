@@ -1,9 +1,9 @@
+#ifndef trajectory_h
+#define trajectory_h
+
 #include "constants.h"
 #include "helpers.h"
 #include "behavior.h"
-
-#ifndef trajectory_h
-#define trajectory_h
 
 
 vector<Car> generatConstSpeedTrajectory(Ego ego, vector<Car> traffic, const vector<double> &map_s,
