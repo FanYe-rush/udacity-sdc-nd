@@ -111,6 +111,14 @@ int main() {
            *   sequentially every .02 seconds
            */
           
+          if (DEBUG) {
+            cout << "current s: " << ego.s  << " , d: " << ego.d << endl;
+            cout << "current lane: " << ego.get_lane() << endl;
+          }
+
+          // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
+          updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
+
           // behavior generate next state, or based on state generate target config?
           State optimal = getOptimalNextState(ego, traffic);
           

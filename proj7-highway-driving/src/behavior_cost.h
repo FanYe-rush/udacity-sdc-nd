@@ -1,49 +1,67 @@
 #ifndef behavior_cost_h
 #define behavior_cost_h
 
+#include <algorithm>
+#include <cmath>
 #include "constants.h"
 #include "helpers.h"
 
+using std::min;
+using std::max;
+using std::pow;
+using std::exp;
+using std::abs;
 
-double calculate_state_transit_cost(Ego ego, const vector<Car> &traffic, State next);
-bool is_feasible(Ego ego, const vector<Car> &traffic, State next);
+const int CLEAR_RANGE_AHEAD = 10;
+const int CLEAR_RANGE_BEHIND = 5;
 
-double calculate_state_transit_cost(Ego ego, const vector<Car> &traffic, State next) {
-  if (!is_feasible(ego, traffic, next)) {
+const int COST_TYPES = 2;
+
+double calculateStateTransitCost(Ego ego, const vector<Car> &traffic, State next,
+                                 vector<double> lane_speeds, int ideal_lane);
+bool isFeasible(Ego ego, const vector<Car> &traffic, State next, int target_lane);
+
+
+// Goal: get to/stay in a lane with speed at close to 50mph as possible
+double calculateStateTransitCost(Ego ego, const vector<Car> &traffic, State next,
+                                 vector<double> lane_speeds, int ideal_lane) {
+  int current_lane = ego.get_lane();
+  int target_lane = getTargetLane(ego, next);
+  
+  if ((target_lane == -1) || (!isFeasible(ego, traffic, next, target_lane))) {
     return 9999999;
   }
+ 
+  double current_speed = ego.v;
+  double target_speed = lane_speeds[target_lane];
+  double ideal_speed = lane_speeds[ideal_lane];
   
+  // Use native one for now
+  return (speed_limit - target_speed) / speed_limit;
   
-  return 0;
+  // Get all types of costs
+  
+//  double speedDiffCost = (speed_limit - target_speed) / speed_limit;
+//  double distToIdealLaneCost = abs(ideal_lane - target_lane) / 2.0;
+//  // Used to counter small v difference lane changes, only change lane when speed gain > gain_threshold_for_lane_change
+//  double laneShiftCost = abs(ideal_lane - current_lane) / 2.0;
+//
+//  vector<double> costs = {speedDiffCost, distToIdealLaneCost, laneShiftCost};
+//  vector<double> weights = {1.0,3.0,2*gain_threshold_for_lane_change/speed_limit+0.01};
+//
+//  double total_cost = 0;
+//  for (int i = 0; i < COST_TYPES; i++) {
+//    total_cost += costs[i] * weights[i];
+//  }
+//
+//  return total_cost;
 }
 
-
 // Sanity check.
-bool is_feasible(Ego ego, const vector<Car> &traffic, State next) {
+bool isFeasible(Ego ego, const vector<Car> &traffic, State next, int target_lane) {
   if ((next == KL) || (next == PRLS) || (next == PLLS)) {
     return true;
   }
-  
-  int target_lane;
-  
-  if (next == RLS) {
-    // Can't shift lane to right if already at the right most lane;
-    if (ego.get_lane() == 2) {
-      return false;
-    }
-    
-    target_lane = ego.get_lane() + 1;
-    
-  } else {
-    // Can't shift lane to left if already at the left most lane;
-    if (ego.get_lane() == 0) {
-      return false;
-    }
-    
-    target_lane = ego.get_lane() - 1;
-  }
-  
-  bool first_half = ego.s < mid_point;
 
   for (int i = 0; i < traffic.size(); i++) {
     if (traffic[i].get_lane() != target_lane) {
@@ -51,15 +69,9 @@ bool is_feasible(Ego ego, const vector<Car> &traffic, State next) {
     }
     
     double pos = traffic[i].s;
-    if ((first_half) && (pos > mid_point)) {
-      pos = pos - track_length;
-    }
-    if ((!first_half) && (pos < mid_point)) {
-      pos = pos + track_length;
-    }
-    
+   
     // Only change lane when 5m behind and 10m ahead are clear of vehicles
-    if ((pos > ego.s - 5) && (pos < ego.s + 10)) {
+    if ((pos > ego.s - CLEAR_RANGE_BEHIND) && (pos < ego.s + CLEAR_RANGE_AHEAD)) {
       if (DEBUG) {
         if (next == RLS) {
           cout << "right lane blocked" << endl;
@@ -81,7 +93,5 @@ bool is_feasible(Ego ego, const vector<Car> &traffic, State next) {
   
   return true;
 }
-
-
 
 #endif /* behavior_cost_h */

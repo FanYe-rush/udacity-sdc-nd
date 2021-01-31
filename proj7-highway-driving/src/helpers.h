@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include "constants.h"
 
 // for convenience
 using std::cout;
@@ -170,7 +171,7 @@ struct Ego {
   State state;
   
   int get_lane() const {
-    return int((d-2) / 4);
+    return int(d / 4);
   }
 };
 
@@ -191,7 +192,11 @@ struct Car {
   }
   
   int get_lane() const {
-    return int((d-2) / 4);
+    return int(d / 4);
+  }
+  
+  double get_speed() {
+    return sqrt((vx*vx) + (vy*vy));
   }
 };
 
@@ -210,6 +215,43 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data) {
     result[i] = c;
   }
   return result;
+}
+
+// Return -1 if it's inavlid
+int getTargetLane(Ego ego, State next) {
+  int current_lane = ego.get_lane();;
+  
+  if ((next == RLS) || (next == PRLS)) {
+    // Can't shift lane to right if already at the right most lane;
+    if (current_lane == 2) {
+      return -1;
+    }
+    return ego.get_lane() + 1;
+  } else if ((next == LLS) || (next == PLLS)) {
+    // Can't shift lane to left if already at the left most lane;
+    if (current_lane == 0) {
+      return -1;
+    }
+    return current_lane - 1;
+  } else {
+    return current_lane;
+  }
+}
+
+void updateTrafficCorrdBasedOnEgoLocation(Ego ego, vector<Car> &traffic) {
+  bool first_half = ego.s < mid_point;
+
+  for (int i = 0; i < traffic.size(); i++) {
+    double pos = traffic[i].s;
+    if ((first_half) && (pos > mid_point)) {
+      pos = pos - track_length;
+    }
+    if ((!first_half) && (pos < mid_point)) {
+      pos = pos + track_length;
+    }
+    
+    traffic[i].s = pos;
+  }
 }
 
 #endif  // HELPERS_H
