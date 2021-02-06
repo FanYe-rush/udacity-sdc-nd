@@ -4,11 +4,13 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <map>
 #include "constants.h"
 
 // for convenience
 using std::cout;
 using std::endl;
+using std::map;
 using std::string;
 using std::vector;
 using std::to_string;
@@ -160,6 +162,14 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
 
 enum State {KL, PRLS, PLLS, RLS, LLS};
 
+struct Mapdata {
+  vector<double> s;
+  vector<double> x;
+  vector<double> y;
+  vector<double> dx;
+  vector<double> dy;
+};
+
 struct Ego {
   double x;
   double y;
@@ -185,6 +195,8 @@ struct Car {
   double s;
   double d;
   
+  double a;
+  
   string toString() {
     return "id= " + to_string(id) + " x=" + to_string(x) + " y=" + to_string(y) +
             "; vx=" + to_string(vx) + " vy=" + to_string(vy) +
@@ -200,7 +212,7 @@ struct Car {
   }
 };
 
-vector<Car> parseSensorFusionData(vector<vector<double>> data) {
+vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, double> &previous_speed) {
   vector<Car> result(data.size());
   for (int i = 0; i < data.size(); i++) {
     Car c;
@@ -211,6 +223,7 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data) {
     c.vy = data[i][4];
     c.s = data[i][5];
     c.d = data[i][6];
+    
     
     result[i] = c;
   }
@@ -252,6 +265,17 @@ void updateTrafficCorrdBasedOnEgoLocation(Ego ego, vector<Car> &traffic) {
     
     traffic[i].s = pos;
   }
+}
+
+
+// Find vehicle right before ego car in the target lane
+bool findCarBefore(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
+  return false;
+}
+
+// Find vehicle right behind ego car in the target lane
+bool findCarBehind(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
+  return false;
 }
 
 #endif  // HELPERS_H

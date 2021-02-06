@@ -27,4 +27,11 @@ double mid_point = track_length / 2;
 // Min speed gain to start a lane change.
 double gain_threshold_for_lane_change = 0.5;
 
+// ======================================
+// Params to be tuned
+// ======================================
+
+double d0 = 10.0;
+double tau = 2.0;
+
 #endif /* constants_h */

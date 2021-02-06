@@ -1,6 +1,7 @@
 #include <uWS/uWS.h>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 #include "Eigen-3.3/Eigen/Core"
@@ -10,11 +11,13 @@
 #include "behavior.h"
 #include "trajectory.h"
 
+#include <ctime>
+
 // for convenience
 using nlohmann::json;
 using std::string;
 using std::vector;
-
+using std::map;
 using std::cout;
 using std::endl;
 
@@ -61,15 +64,25 @@ int main() {
   Ego ego;
   ego.state = KL;
   
-  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
-               &map_waypoints_dx,&map_waypoints_dy, &ego]
+  Mapdata mapdata;
+  mapdata.s = map_waypoints_s;
+  mapdata.x = map_waypoints_x;
+  mapdata.y = map_waypoints_y;
+  mapdata.dx = map_waypoints_dx;
+  mapdata.dy = map_waypoints_dy;
+  
+  map<int, double> previous_speed;
+  
+  clock_t timer = clock();
+  
+  h.onMessage([&mapdata, &ego, &previous_speed, &timer]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
     if (length && length > 2 && data[0] == '4' && data[1] == '2') {
-
+      
       auto s = hasData(data);
 
       if (s != "") {
@@ -78,6 +91,8 @@ int main() {
         string event = j[0].get<string>();
         
         if (event == "telemetry") {
+          timer = clock() - timer;
+          cout << (float)timer/CLOCKS_PER_SEC << endl;
           // j[1] is the data JSON object
           
           // Main car's localization Data
@@ -99,7 +114,7 @@ int main() {
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
           
-          vector<Car> traffic = parseSensorFusionData(sensor_fusion);
+          vector<Car> traffic = parseSensorFusionData(sensor_fusion, previous_speed);
           
           json msgJson;
 
@@ -124,7 +139,7 @@ int main() {
           
           // trajectory gen generates a trajectory
           
-          vector<Car> trajectory = generateTrajectory(ego, optimal, traffic, map_waypoints_s, map_waypoints_x, map_waypoints_y);
+          vector<Car> trajectory = generateTrajectory(ego, optimal, traffic, mapdata);
           
           // populate trajectory into next_x_vals, next_y_vals
           
