@@ -212,7 +212,7 @@ struct Car {
   }
 };
 
-vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, double> &previous_speed) {
+vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, double> &previous_acc) {
   vector<Car> result(data.size());
   for (int i = 0; i < data.size(); i++) {
     Car c;
@@ -224,11 +224,19 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, do
     c.s = data[i][5];
     c.d = data[i][6];
     
+    auto it = previous_acc.find(c.id);
+    if (it != previous_acc.end()) {
+      c.a = it->second;
+    } else {
+      c.a = 0.0;
+    }
     
     result[i] = c;
   }
   return result;
 }
+
+
 
 // Return -1 if it's inavlid
 int getTargetLane(Ego ego, State next) {

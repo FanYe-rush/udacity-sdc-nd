@@ -18,6 +18,7 @@ using nlohmann::json;
 using std::string;
 using std::vector;
 using std::map;
+using std::move;
 using std::cout;
 using std::endl;
 
@@ -72,10 +73,11 @@ int main() {
   mapdata.dy = map_waypoints_dy;
   
   map<int, double> previous_speed;
+  map<int, double> previous_acc;
   
   clock_t timer = clock();
   
-  h.onMessage([&mapdata, &ego, &previous_speed, &timer]
+  h.onMessage([&mapdata, &ego, &previous_speed, &previous_acc, &timer]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -91,8 +93,6 @@ int main() {
         string event = j[0].get<string>();
         
         if (event == "telemetry") {
-          timer = clock() - timer;
-          cout << (float)timer/CLOCKS_PER_SEC << endl;
           // j[1] is the data JSON object
           
           // Main car's localization Data
@@ -114,7 +114,30 @@ int main() {
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
           
-          vector<Car> traffic = parseSensorFusionData(sensor_fusion, previous_speed);
+          vector<Car> traffic = parseSensorFusionData(sensor_fusion, previous_acc);
+          
+          clock_t now = clock();
+          double elapsed = (float) (now - timer) / CLOCKS_PER_SEC;
+          
+          // Update recorded speed and acceleration for observed cars based on id.
+          // But only do so at most every 0.01 seconds to get a smoother accerlation reading
+          if (elapsed > 0.1) {
+            timer = now;
+            
+            map<int, double> new_speed;
+            previous_acc.clear();
+            for (int i = 0; i < traffic.size(); i++) {
+              Car c = traffic[i];
+              map<int, double>::iterator it = previous_speed.find(c.id);
+              if (it != previous_speed.end()) {
+                c.a = (it->second - c.get_speed()) / elapsed;
+                previous_acc[c.id] = c.a;
+              }
+              new_speed[c.id] = c.get_speed();
+            }
+            
+            previous_speed = move(new_speed);
+          }
           
           json msgJson;
 
