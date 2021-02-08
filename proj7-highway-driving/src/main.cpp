@@ -120,8 +120,8 @@ int main() {
           double elapsed = (float) (now - timer) / CLOCKS_PER_SEC;
           
           // Update recorded speed and acceleration for observed cars based on id.
-          // But only do so at most every 0.01 seconds to get a smoother accerlation reading
-          if (elapsed > 0.1) {
+          // But only do so every 30 steps to get a smoother accerlation reading
+          if (previous_path_x.size() < 70) {
             timer = now;
             
             map<int, double> new_speed;
@@ -143,35 +143,47 @@ int main() {
 
           vector<double> next_x_vals;
           vector<double> next_y_vals;
-
-          /**
-           * TODO: define a path made up of (x,y) points that the car will visit
-           *   sequentially every .02 seconds
-           */
           
           if (DEBUG) {
             cout << "current s: " << ego.s  << " , d: " << ego.d << endl;
             cout << "current lane: " << ego.get_lane() << endl;
           }
-
-          // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
-          updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
-
-          // behavior generate next state, or based on state generate target config?
-          State optimal = getOptimalNextState(ego, traffic);
           
-          // trajectory gen generates a trajectory
-          
-          vector<Car> trajectory = generateTrajectory(ego, optimal, traffic, mapdata);
-          
-          // populate trajectory into next_x_vals, next_y_vals
-          
-          for (int i = 0; i < trajectory.size(); i++) {
-            Car next = trajectory[i];
-            next_x_vals.push_back(next.x);
-            next_y_vals.push_back(next.y);
+          if (previous_path_x.size() < 2) {
+            double prev_x = ego.x - cos(deg2rad(ego.yaw));
+            double prev_y = ego.y - sin(deg2rad(ego.yaw));
+            
+            previous_path_x.push_back(prev_x);
+            previous_path_x.push_back(ego.x);
+            
+            previous_path_y.push_back(prev_y);
+            previous_path_y.push_back(ego.y);
           }
           
+          for (int i = 0; i < previous_path_x.size(); i++) {
+            next_x_vals.push_back(previous_path_x[i]);
+            next_y_vals.push_back(previous_path_y[i]);
+          }
+
+          // Keep up to 100 steps ahead, and only generate new path after executing 30 steps
+          if (previous_path_x.size() < 70) {
+            // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
+            updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
+
+            // behavior generate next state, or based on state generate target config?
+            State optimal = getOptimalNextState(ego, traffic);
+            
+            // trajectory gen generates a trajectory
+            
+            vector<vector<double>> trajectory = generateTrajectory(ego, optimal, traffic, mapdata, next_x_vals, next_y_vals);
+            
+            // populate trajectory into next_x_vals, next_y_vals
+            
+            for (int i = 0; i < TOTAL_STEPS - next_x_vals.size(); i++) {
+              next_x_vals.push_back(trajectory[i][0]);
+              next_y_vals.push_back(trajectory[i][1]);
+            }
+          }
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
 

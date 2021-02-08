@@ -45,6 +45,16 @@ double distance(double x1, double y1, double x2, double y2) {
   return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 }
 
+double calcPolynomial(const vector<double> &coeffs, double x) {
+  double accu = 0;
+  double term = 1;
+  for (int i = 0; i < coeffs.size(); i++) {
+    accu += coeffs[i] * term;
+    term *= x;
+  }
+  return accu;
+}
+
 // Calculate closest waypoint to current x, y position
 int ClosestWaypoint(double x, double y, const vector<double> &maps_x, 
                     const vector<double> &maps_y) {
@@ -237,7 +247,6 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, do
 }
 
 
-
 // Return -1 if it's inavlid
 int getTargetLane(Ego ego, State next) {
   int current_lane = ego.get_lane();;
@@ -275,14 +284,107 @@ void updateTrafficCorrdBasedOnEgoLocation(Ego ego, vector<Car> &traffic) {
   }
 }
 
+vector<vector<double>> extendPreviousPath(const vector<double> &x_vals, const vector<double> &y_vals, int steps) {
+  double x_diff = x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2];
+  double y_diff = y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2];
+  
+  vector<vector<double>> additionalPoints;
+  double base_x = x_vals[x_vals.size()-1];
+  double base_y = y_vals[y_vals.size()-1];
+  
+  for (int i = 1; i <= steps; i++) {
+    double x = base_x + x_diff*i;
+    double y = base_y + y_diff*i;
+    additionalPoints.push_back({x,y});
+  }
+  return additionalPoints;
+}
+
+// Get refence points 30, 60, 90 ahead in the relevant lane.
+// laneShift = 0: same lane, -1: left change, 1: right change;
+vector<vector<double>> extendRefPoints(Ego ego, const Mapdata &map, int laneShift) {
+  vector<vector<double>> refs_points;
+  for (int i = 1; i < 4; i++) {
+    refs_points.push_back(getXY(ego.s + i*30, ego.d + laneShift*4.0, map.s, map.x, map.y));
+  }
+  return refs_points;
+}
+
+// predict where this given car would be after time T from now.
+Car simulate(Car current, double T, const Mapdata &mapdata) {
+  Car future;
+  
+  future.id = current.id;
+  // Assume constant acceleration
+  future.a = current.a;
+  
+  // Break acceleration apart in x, y axis
+  double v = current.get_speed();
+  double ax = current.a * (current.vx / v);
+  double ay = current.a * (current.vy / v);
+  
+  future.vx = current.vx + ax * T;
+  future.vy = current.vy + ay * T;
+  
+  future.x = current.x + T * current.vx + 0.5 * ax * T * T;
+  future.y = current.y + T * current.vy + 0.5 * ay * T * T;
+  
+  double heading = atan2(future.vy, future.vx);
+  vector<double> frenet = getFrenet(future.x, future.y, heading, mapdata.x, mapdata.y);
+  
+  future.s = frenet[0];
+  future.d = frenet[1];
+}
+
+//========================================================================
+//Converting any points in map corrdinates to/from ego car centered system
+vector<double> transformToEgoCorrd(Ego ego, double x, double y) {
+  double shift_x = x - ego.x;
+  double shift_y = y - ego.y;
+  
+  double rad_yaw = deg2rad(ego.yaw);
+  
+  shift_x = (shift_x*cos(0-rad_yaw) - shift_y*sin(0-rad_yaw));
+  shift_y = (shift_x*sin(0-rad_yaw) + shift_y*cos(0-rad_yaw));
+  
+  return {shift_x, shift_y};
+}
+
+vector<double> transformFromEgoCorrd(Ego ego, double x, double y) {
+  double rad_yaw = deg2rad(ego.yaw);
+  
+  double map_x = (x*cos(rad_yaw)-y*sin(rad_yaw));
+  double map_y = (x*sin(rad_yaw)+y*cos(rad_yaw));
+  
+  return {map_x+ego.x, map_y+ego.y};
+}
+//=========================================================================
+
 
 // Find vehicle right before ego car in the target lane
-bool findCarBefore(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
-  return false;
+bool findLeadingCar(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
+  Car target;
+  double min_dist = look_ahead_dist;
+  for (int i = 0; i < traffic.size(); i++) {
+    if (traffic[i].get_lane() == lane) {
+      Car c = traffic[i];
+
+      if ((c.s > ego.s) && (c.s - ego.s <= min_dist)) {
+        target = c;
+      }
+    }
+  }
+  
+  if (target.id != -1) {
+    foundCar = target;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Find vehicle right behind ego car in the target lane
-bool findCarBehind(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
+bool findChasingCar(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
   return false;
 }
 

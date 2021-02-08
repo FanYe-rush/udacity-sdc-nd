@@ -1,110 +1,134 @@
 #ifndef trajectory_h
 #define trajectory_h
 
+#include <cmath>
 #include "constants.h"
 #include "helpers.h"
 #include "behavior.h"
+#include "ptg.h"
 
 
-vector<Car> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map);
+using std::abs;
 
-vector<double> generateLongiFollowingTrajectory(Ego ego, Car lv, const vector<Car> &traffic);
-vector<double> generateLongiSpeedKeepingTrajectory(Ego ego, const vector<Car> &traffic);
+vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map,
+                                       const vector<vector<double>> &extension);
 
-vector<Car> generateTrajectory(Ego ego, State next, vector<Car> traffic, const Mapdata &map) {
+vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, const vector<Car> &traffic);
+vector<double> generateLongiSpeedKeepingPathPoly(Ego ego, const vector<Car> &traffic);
+
+
+
+
+vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traffic, const Mapdata &map,
+                               const vector<double> &prev_x_vals, const vector<double> &prev_y_vals) {
   
-  if (next == KL) {
-    return generateKeepLaneTrajectory(ego, traffic, map);
-  } else {
-    return vector<Car>(0);
-  }
+  vector<vector<double>> extension;
+  Ego extended_ego;
+  
+  extension = extendPreviousPath(prev_x_vals, prev_y_vals, 3);
+  
+  extended_ego.yaw = ego.yaw;
+  extended_ego.v = ego.v;
+  extended_ego.x = extension[extension.size()-1][0];
+  extended_ego.y = extension[extension.size()-1][1];
+  vector<double> sd = getFrenet(extended_ego.x, extended_ego.y, deg2rad(ego.yaw), map.x, map.y);
+  extended_ego.s = sd[0];
+  extended_ego.d = sd[1];
+  
+  return generateKeepLaneTrajectory(extended_ego, traffic, map, extension);
+//
+//  if (next == KL) {
+//    return generateKeepLaneTrajectory(extended_ego, traffic, map, extension);
+//  } else {
+//    return vector<Car>(0);
+//  }
 }
 
 
-vector<Car> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map) {
+vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &extension) {
   
   Car lv;
-  bool foundLeadingCar = findCarBefore(ego, traffic, ego.get_lane(), lv);
-  if (foundLeadingCar) {
-    vector<double> longi = generateLongiFollowingTrajectory(ego, lv, traffic);
-  } else {
-    vector<double> longi = generateLongiSpeedKeepingTrajectory(ego, traffic);
-  }
-  // Combine with constant lateral and convert to cartisian;
+  bool foundLeadingCar = findLeadingCar(ego, traffic, ego.get_lane(), lv);
   
-  return vector<Car>(0);
+  vector<double> coeff;
+  
+  if (foundLeadingCar) {
+    coeff = generateLongiFollowingPathPoly(ego, lv, traffic);
+  } else {
+    coeff = generateLongiSpeedKeepingPathPoly(ego, traffic);
+  }
+  
+  vector<vector<double>> eval_points;
+  
+  // Points to be fitted by spline.
+  // Extension points + few goal points
+  vector<double> x_vals;
+  vector<double> y_vals;
+  
+  for (int i = 0; i < extension.size(); i++) {
+    eval_points.push_back(extension[i]);
+    
+    x_vals.push_back(extension[i][0]);
+    y_vals.push_back(extension[i][1]);
+  }
+  
+  // Keep lane, no lane change, laneShift = 0;
+  vector<vector<double>> more_ref_points = extendRefPoints(ego, map, 0);
+  for (int i = 0; i < more_ref_points.size(); i++) {
+    x_vals.push_back(more_ref_points[i][0]);
+    y_vals.push_back(more_ref_points[i][1]);
+  }
+  
+  // Generate 100 x values to later be fitted on the spline curve
+  for (int i = 1; i < TOTAL_STEPS; i++) {
+    double s = calcPolynomial(coeff, i*0.02);
+    double d = ego.d;
+    
+    vector<double> xy = getXY(s,d,map.s,map.x,map.y);
+    if (DEBUG) {
+      cout << xy[0] << " " << xy[1] << endl;
+    }
+    eval_points.push_back(xy);
+  }
+
+  return spline_fit(ego, x_vals, y_vals, eval_points);
 }
 
 
-vector<double> generateLongiFollowingTrajectory(Ego ego, Car lv, const vector<Car> &traffic) {
-  double targetS = lv.s - (d0 + tau * lv.get_speed());
-  double targetV = 0;
+vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, const vector<Car> &traffic) {
+  double s = ego.s;
+  double v = ego.v;
+  double a = 0;
+  
+  double dt = 3.0;
+  
+  // lv position after dt;
+  double st = lv.s + lv.get_speed()*dt + dt*lv.a*lv.a/2;
+  // lv speed after dt;
+  double vt = lv.get_speed() + dt * lv.a;
+  
+  double targetS = st - (d0 + tau*lv.get_speed());
+  double targetV = vt - tau * lv.a;
+  // Cap acceleration at 10.
+  double targetA = min(10.0, lv.a);
+  
+  // TODO: add noise to goal and dt to generate a bunch of options.
+  return ptg({s,v,a}, {targetS, targetV, targetA}, dt);
+}
+
+vector<double> generateLongiSpeedKeepingPathPoly(Ego ego, const vector<Car> &traffic) {
+  double s = ego.s;
+  double v = ego.v;
+  double a = 0;
+  
+  double dt = 3.0;
+  
+  double targetS = s + dt * (speed_limit + v) / 2;
+  double targetV = speed_limit;
   double targetA = 0;
-  return vector<double>(0);
+  
+  // TODO: add noise to goal and dt to generate a bunch of options.
+  return ptg({s,v,a}, {targetS, targetV, targetA}, dt);
 }
-
-vector<double> generateLongiSpeedKeepingTrajectory(Ego ego, const vector<Car> &traffic) {
-  return vector<double>(0);
-}
-
-//vector<Car> generatConstSpeedTrajectory(Ego ego, vector<Car> traffic, const Map &map) {
-//  vector<Car> trajectory;
-//
-//  Car prev;
-//  prev.x = ego.x;
-//  prev.y = ego.y;
-//  prev.s = ego.s;
-//  prev.d = ego.d;
-//
-//  int myLane = ego.get_lane();
-//
-//
-//  // TODO: refactor to extract methods to get vehicle in front and behind.
-//  Car target;
-//  double min_dist = look_ahead_dist;
-//  for (int i = 0; i < traffic.size(); i++) {
-//    if (traffic[i].get_lane() == myLane) {
-//      Car c = traffic[i];
-//
-//      if ((c.s > ego.s) && (c.s - ego.s <= min_dist)) {
-//        target = c;
-//      }
-//    }
-//  }
-//
-//  double horizon = ego.s + look_ahead_dist;
-//  if (horizon > track_length) {
-//    horizon -= track_length;
-//  }
-//
-//
-//  double target_v = speed_limit-0.1;
-//
-//  if ((target.id != -1) && (target.s < horizon)) {
-//
-//    double front_car_speed = sqrt(target.vx*target.vx + target.vy*target.vy);
-//    cout << "car " + to_string(target.id) + " detected in front with speed " + to_string(front_car_speed) << endl;
-//    if (front_car_speed < target_v) {
-//      target_v = front_car_speed;
-//    }
-//  }
-//
-//  for (int i = 0; i < 50; i++) {
-//    Car next;
-//
-//    next.s = prev.s + t_interval * target_v;
-//    next.d = prev.d;
-//
-//    vector<double> xy = getXY(next.s, next.d, map.s, map.x, map.y);
-//    next.x = xy[0];
-//    next.y = xy[1];
-//
-//    trajectory.push_back(next);
-//    prev = next;
-//  }
-//
-//  return trajectory;
-//}
-
 
 #endif /* trajectory_h */
