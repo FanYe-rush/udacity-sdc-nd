@@ -102,7 +102,7 @@ int main() {
           ego.d = j[1]["d"];
           ego.yaw = j[1]["yaw"];
           ego.v = j[1]["speed"];
-
+          
           // Previous path data given to the Planner
           auto previous_path_x = j[1]["previous_path_x"];
           auto previous_path_y = j[1]["previous_path_y"];
@@ -120,8 +120,8 @@ int main() {
           double elapsed = (float) (now - timer) / CLOCKS_PER_SEC;
           
           // Update recorded speed and acceleration for observed cars based on id.
-          // But only do so every 30 steps to get a smoother accerlation reading
-          if (previous_path_x.size() < 70) {
+          // But only do so every 20 steps to get a smoother accerlation reading
+          if (previous_path_x.size() < TOTAL_STEPS-20) {
             timer = now;
             
             map<int, double> new_speed;
@@ -144,11 +144,6 @@ int main() {
           vector<double> next_x_vals;
           vector<double> next_y_vals;
           
-          if (DEBUG) {
-            cout << "current s: " << ego.s  << " , d: " << ego.d << endl;
-            cout << "current lane: " << ego.get_lane() << endl;
-          }
-          
           if (previous_path_x.size() < 2) {
             double prev_x = ego.x - cos(deg2rad(ego.yaw));
             double prev_y = ego.y - sin(deg2rad(ego.yaw));
@@ -165,8 +160,8 @@ int main() {
             next_y_vals.push_back(previous_path_y[i]);
           }
 
-          // Keep up to 100 steps ahead, and only generate new path after executing 30 steps
-          if (previous_path_x.size() < 70) {
+          // Keep up to 100 steps ahead, and only generate new path after executing 20 steps
+          if (previous_path_x.size() < TOTAL_STEPS-20) {
             // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
             updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
 

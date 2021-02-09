@@ -300,12 +300,12 @@ vector<vector<double>> extendPreviousPath(const vector<double> &x_vals, const ve
   return additionalPoints;
 }
 
-// Get refence points 30, 60, 90 ahead in the relevant lane.
+// Get refence points 15, 30, 45 ahead in the relevant lane.
 // laneShift = 0: same lane, -1: left change, 1: right change;
 vector<vector<double>> extendRefPoints(Ego ego, const Mapdata &map, int laneShift) {
   vector<vector<double>> refs_points;
   for (int i = 1; i < 4; i++) {
-    refs_points.push_back(getXY(ego.s + i*30, ego.d + laneShift*4.0, map.s, map.x, map.y));
+    refs_points.push_back(getXY(ego.s + i*15, (ego.get_lane() + laneShift)*4.0+2, map.s, map.x, map.y));
   }
   return refs_points;
 }
