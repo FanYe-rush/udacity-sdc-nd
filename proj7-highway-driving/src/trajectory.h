@@ -29,7 +29,7 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
   extension = extendPreviousPath(prev_x_vals, prev_y_vals, 3);
   
   extended_ego.yaw = ego.yaw;
-  extended_ego.v = ego.v;
+  extended_ego.v = getCurrentSpeed(prev_x_vals, prev_y_vals);
   extended_ego.x = extension[extension.size()-1][0];
   extended_ego.y = extension[extension.size()-1][1];
   vector<double> sd = getFrenet(extended_ego.x, extended_ego.y, deg2rad(ego.yaw), map.x, map.y);
@@ -103,7 +103,7 @@ vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, const vector<Car>
   double v = min(ego.v, speed_limit);
   double a = 0;
   
-  double dt = 4.0;
+  double dt = 2.0;
   
   double targetS = lv.s - d0;
   // Match slow down but do not match speed up
@@ -121,7 +121,7 @@ vector<double> generateLongiSpeedKeepingPathPoly(Ego ego, const vector<Car> &tra
   double v = min(ego.v, speed_limit);
   double a = 0;
   
-  double dt = 4.0;
+  double dt = 2.0;
   
   double targetS = s + dt * (speed_limit + v) / 2;
   double targetV = speed_limit;

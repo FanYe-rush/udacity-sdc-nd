@@ -300,6 +300,12 @@ vector<vector<double>> extendPreviousPath(const vector<double> &x_vals, const ve
   return additionalPoints;
 }
 
+double getCurrentSpeed(const vector<double> &x_vals, const vector<double> &y_vals) {
+  double vx = (x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2]) / 0.02;
+  double vy = (y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2]) / 0.02;
+  return sqrt(vx*vx+vy*vy);
+}
+
 // Get refence points 15, 30, 45 ahead in the relevant lane.
 // laneShift = 0: same lane, -1: left change, 1: right change;
 vector<vector<double>> extendRefPoints(Ego ego, const Mapdata &map, int laneShift) {

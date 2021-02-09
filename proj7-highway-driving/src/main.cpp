@@ -121,7 +121,7 @@ int main() {
           
           // Update recorded speed and acceleration for observed cars based on id.
           // But only do so every 20 steps to get a smoother accerlation reading
-          if (previous_path_x.size() < TOTAL_STEPS-20) {
+          if (previous_path_x.size() < REGEN_THRESHOLD) {
             timer = now;
             
             map<int, double> new_speed;
@@ -145,8 +145,8 @@ int main() {
           vector<double> next_y_vals;
           
           if (previous_path_x.size() < 2) {
-            double prev_x = ego.x - cos(deg2rad(ego.yaw));
-            double prev_y = ego.y - sin(deg2rad(ego.yaw));
+            double prev_x = ego.x - cos(deg2rad(ego.yaw))*0.02*(max_acc*0.02);
+            double prev_y = ego.y - sin(deg2rad(ego.yaw))*0.02*(max_acc*0.02);
             
             previous_path_x.push_back(prev_x);
             previous_path_x.push_back(ego.x);
@@ -160,8 +160,7 @@ int main() {
             next_y_vals.push_back(previous_path_y[i]);
           }
 
-          // Keep up to 100 steps ahead, and only generate new path after executing 20 steps
-          if (previous_path_x.size() < TOTAL_STEPS-20) {
+          if (previous_path_x.size() < REGEN_THRESHOLD) {
             // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
             updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
 

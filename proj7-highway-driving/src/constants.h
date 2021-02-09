@@ -4,6 +4,7 @@
 bool DEBUG = true;
 
 int TOTAL_STEPS = 100;
+int REGEN_THRESHOLD = 70;
 
 // How long in the future do we look forward for prediction/planning;
 double horizon = 2.0;
@@ -33,7 +34,7 @@ double gain_threshold_for_lane_change = 0.5;
 // Params to be tuned
 // ======================================
 
-double d0 = 20.0;
+double d0 = 10.0;
 double tau = 1.0;
 
 #endif /* constants_h */
