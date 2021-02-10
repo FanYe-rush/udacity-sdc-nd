@@ -28,11 +28,11 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
   
   extension = extendPreviousPath(prev_x_vals, prev_y_vals, 3);
   
-  extended_ego.yaw = ego.yaw;
+  extended_ego.yaw = getCurrentAngle(prev_x_vals, prev_y_vals);
   extended_ego.v = getCurrentSpeed(prev_x_vals, prev_y_vals);
   extended_ego.x = extension[extension.size()-1][0];
   extended_ego.y = extension[extension.size()-1][1];
-  vector<double> sd = getFrenet(extended_ego.x, extended_ego.y, deg2rad(ego.yaw), map.x, map.y);
+  vector<double> sd = getFrenet(extended_ego.x, extended_ego.y, deg2rad(extended_ego.yaw), map.x, map.y);
   extended_ego.s = sd[0];
   extended_ego.d = sd[1];
   
@@ -91,10 +91,8 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
     }
     eval_points.push_back(xy);
   }
-  
-  return eval_points;
-// TODO: re-enable spline after testing quint poly
-//  return spline_fit(ego, x_vals, y_vals, eval_points);
+
+  return spline_fit(ego, x_vals, y_vals, eval_points);
 }
 
 

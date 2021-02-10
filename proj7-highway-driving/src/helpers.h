@@ -56,7 +56,7 @@ double calcPolynomial(const vector<double> &coeffs, double x) {
 }
 
 // Calculate closest waypoint to current x, y position
-int ClosestWaypoint(double x, double y, const vector<double> &maps_x, 
+int ClosestWaypoint(double x, double y, const vector<double> &maps_x,
                     const vector<double> &maps_y) {
   double closestLen = 100000; //large number
   int closestWaypoint = 0;
@@ -75,7 +75,7 @@ int ClosestWaypoint(double x, double y, const vector<double> &maps_x,
 }
 
 // Returns next waypoint of the closest waypoint
-int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x, 
+int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x,
                  const vector<double> &maps_y) {
   int closestWaypoint = ClosestWaypoint(x,y,maps_x,maps_y);
 
@@ -98,8 +98,8 @@ int NextWaypoint(double x, double y, double theta, const vector<double> &maps_x,
 }
 
 // Transform from Cartesian x,y coordinates to Frenet s,d coordinates
-vector<double> getFrenet(double x, double y, double theta, 
-                         const vector<double> &maps_x, 
+vector<double> getFrenet(double x, double y, double theta,
+                         const vector<double> &maps_x,
                          const vector<double> &maps_y) {
   int next_wp = NextWaypoint(x,y, theta, maps_x,maps_y);
 
@@ -143,8 +143,8 @@ vector<double> getFrenet(double x, double y, double theta,
 }
 
 // Transform from Frenet s,d coordinates to Cartesian x,y
-vector<double> getXY(double s, double d, const vector<double> &maps_s, 
-                     const vector<double> &maps_x, 
+vector<double> getXY(double s, double d, const vector<double> &maps_s,
+                     const vector<double> &maps_x,
                      const vector<double> &maps_y) {
   int prev_wp = -1;
 
@@ -300,18 +300,24 @@ vector<vector<double>> extendPreviousPath(const vector<double> &x_vals, const ve
   return additionalPoints;
 }
 
+double getCurrentAngle(const vector<double> &x_vals, const vector<double> &y_vals) {
+  double dx = (x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2]);
+  double dy = (y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2]);
+  return rad2deg(atan2(dy, dx));
+}
+
 double getCurrentSpeed(const vector<double> &x_vals, const vector<double> &y_vals) {
   double vx = (x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2]) / 0.02;
   double vy = (y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2]) / 0.02;
   return sqrt(vx*vx+vy*vy);
 }
 
-// Get refence points 15, 30, 45 ahead in the relevant lane.
+// Get additional refence points ahead in the relevant lane
 // laneShift = 0: same lane, -1: left change, 1: right change;
 vector<vector<double>> extendRefPoints(Ego ego, const Mapdata &map, int laneShift) {
   vector<vector<double>> refs_points;
-  for (int i = 1; i < 4; i++) {
-    refs_points.push_back(getXY(ego.s + i*15, (ego.get_lane() + laneShift)*4.0+2, map.s, map.x, map.y));
+  for (int i = 0; i < 4; i++) {
+    refs_points.push_back(getXY(ego.s + 10 + i*15, (ego.get_lane() + laneShift)*4.0+2, map.s, map.x, map.y));
   }
   return refs_points;
 }
