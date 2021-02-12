@@ -143,18 +143,7 @@ int main() {
 
           vector<double> next_x_vals;
           vector<double> next_y_vals;
-          
-          if (previous_path_x.size() < 2) {
-            double prev_x = ego.x - cos(deg2rad(ego.yaw))*0.02*(max_acc*0.02);
-            double prev_y = ego.y - sin(deg2rad(ego.yaw))*0.02*(max_acc*0.02);
-            
-            previous_path_x.push_back(prev_x);
-            previous_path_x.push_back(ego.x);
-            
-            previous_path_y.push_back(prev_y);
-            previous_path_y.push_back(ego.y);
-          }
-          
+ 
           for (int i = 0; i < previous_path_x.size(); i++) {
             next_x_vals.push_back(previous_path_x[i]);
             next_y_vals.push_back(previous_path_y[i]);

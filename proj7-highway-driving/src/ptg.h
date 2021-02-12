@@ -46,15 +46,25 @@ vector<vector<double>> spline_fit(Ego ego, const vector<double> &x_vals, const v
   s.set_points(transformed_x, transformed_y);
   
   vector<vector<double>> spline_points;
-  for (int i = 0; i < eval_points.size(); i++) {
+  for (int i = 0; i < eval_points.size()-1; i++) {
+    double ego_x;
+    double ego_y;
+    
+    vector<double> map_xy;
+    
     vector<double> ego_xy = transformToEgoCorrd(ego, eval_points[i][0], eval_points[i][1]);
+    vector<double> next_ego_xy = transformToEgoCorrd(ego, eval_points[i+1][0], eval_points[i+1][1]);
     
-    double ego_x = ego_xy[0];
-    double ego_y = s(ego_x);
+    double step_size = (next_ego_xy[0] - ego_xy[0]) / INTERPOLATE_STEP_SIZE;
     
-    vector<double> map_xy = transformFromEgoCorrd(ego, ego_x, ego_y);
-    
-    spline_points.push_back(map_xy);
+    for (int step=0; step<INTERPOLATE_STEP_SIZE; step++) {
+      double ego_x = ego_xy[0] + step_size * step;
+      double ego_y = s(ego_x);
+      
+      vector<double> map_xy = transformFromEgoCorrd(ego, ego_x, ego_y);
+      
+      spline_points.push_back(map_xy);
+    }
   }
   
   return spline_points;

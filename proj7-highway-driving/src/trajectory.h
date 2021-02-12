@@ -111,13 +111,11 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
     y_vals.push_back(tail[i][1]);
   }
   
-  for (int i = 1; i < (int)(TOTAL_STEPS/20); i++) {
-    double s = calcPolynomial(coeff, i*0.02*20);
+  for (int i = 3; i < 6; i++) {
+    double s = calcPolynomial(coeff, i*0.02*10);
     double d = ego.get_lane() * 4.0 + 2;
     
     vector<double> xy = getXY(s,d,map.s,map.x,map.y);
-    
-    eval_points.push_back(xy);
     
     x_vals.push_back(xy[0]);
     y_vals.push_back(xy[1]);
@@ -125,10 +123,19 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
   
   vector<vector<double>> refs_points;
   for (int i = 1; i < 4; i++) {
-    vector<double> xy = getXY(ego.s+50+20*i, ego.get_lane()*4.0+2, map.s, map.x, map.y);
+    vector<double> xy = getXY(ego.s+30*i, ego.get_lane()*4.0+2, map.s, map.x, map.y);
     
     x_vals.push_back(xy[0]);
     y_vals.push_back(xy[1]);
+  }
+  
+  for (int i = 1; i < TOTAL_STEPS; i+=INTERPOLATE_STEP_SIZE) {
+    double s = calcPolynomial(coeff, i*0.02);
+    double d = ego.get_lane() * 4.0 + 2;
+    
+    vector<double> xy = getXY(s,d,map.s,map.x,map.y);
+    
+    eval_points.push_back(xy);
   }
   
   return spline_fit(ego, x_vals, y_vals, eval_points);
