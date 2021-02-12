@@ -169,7 +169,7 @@ int main() {
             
             // trajectory gen generates a trajectory
             
-            vector<vector<double>> trajectory = generateTrajectory(ego, optimal, traffic, mapdata, next_x_vals, next_y_vals);
+            vector<vector<double>> trajectory = generateTrajectory(ego, optimal, traffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
             
             // populate trajectory into next_x_vals, next_y_vals
             

@@ -354,21 +354,28 @@ vector<double> transformToEgoCorrd(Ego ego, double x, double y) {
   double shift_x = x - ego.x;
   double shift_y = y - ego.y;
   
-  double rad_yaw = deg2rad(ego.yaw);
+  double car_angle = deg2rad(ego.yaw);
+  double vector_angle = atan2(shift_y, shift_x);
   
-  shift_x = (shift_x*cos(0-rad_yaw) - shift_y*sin(0-rad_yaw));
-  shift_y = (shift_x*sin(0-rad_yaw) + shift_y*cos(0-rad_yaw));
+  double norm = sqrt(shift_x*shift_x + shift_y*shift_y);
   
-  return {shift_x, shift_y};
+  double rotate_x = norm * cos(vector_angle - car_angle);
+  double rotate_y = norm * sin(vector_angle - car_angle);
+  
+  return {rotate_x, rotate_y};
 }
 
 vector<double> transformFromEgoCorrd(Ego ego, double x, double y) {
-  double rad_yaw = deg2rad(ego.yaw);
+  double vector_angle = atan2(y, x);
+  double car_angle = deg2rad(ego.yaw);
+  double map_angle = vector_angle + car_angle;
   
-  double map_x = (x*cos(rad_yaw)-y*sin(rad_yaw));
-  double map_y = (x*sin(rad_yaw)+y*cos(rad_yaw));
+  double norm = sqrt(x*x + y*y);
   
-  return {map_x+ego.x, map_y+ego.y};
+  double map_x = norm * cos(map_angle) + ego.x;
+  double map_y = norm * sin(map_angle) + ego.y;
+  
+  return {map_x, map_y};
 }
 //=========================================================================
 

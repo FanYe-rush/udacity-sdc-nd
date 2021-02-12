@@ -21,7 +21,8 @@ vector<double> generateLongiSpeedKeepingPathPoly(Ego ego, const vector<Car> &tra
 
 
 vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traffic, const Mapdata &map,
-                               const vector<double> &prev_x_vals, const vector<double> &prev_y_vals) {
+                               const vector<double> &prev_x_vals, const vector<double> &prev_y_vals,
+                              double prev_s, double prev_d) {
   
   vector<vector<double>> extension;
   Ego extended_ego;
