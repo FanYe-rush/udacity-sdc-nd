@@ -13,7 +13,7 @@ using std::cout;
 using std::endl;
 
 vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map,
-                                       const vector<vector<double>> &extension);
+                                       const vector<vector<double>> &trail);
 
 vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, const vector<Car> &traffic);
 vector<double> generateLongiSpeedKeepingPathPoly(Ego ego, const vector<Car> &traffic);
@@ -58,7 +58,6 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
     
     ref_v = sqrt(vx*vx+vy*vy);
   }
-  
 
   vector<vector<double>> trail;
   trail.push_back({prev_x, prev_y});
@@ -86,7 +85,7 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
 //  }
 }
 
-vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &extension) {
+vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail) {
   
   Car lv;
   bool foundLeadingCar = findLeadingCar(ego, traffic, ego.get_lane(), lv);
@@ -104,35 +103,34 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
   vector<vector<double>> eval_points;
   
   // Points to be fitted by spline.
-  // Extension points + few goal points
   vector<double> x_vals;
   vector<double> y_vals;
   
-  for (int i = 0; i < extension.size(); i++) {
-    eval_points.push_back(extension[i]);
-    
-    x_vals.push_back(extension[i][0]);
-    y_vals.push_back(extension[i][1]);
+  for (int i = 0; i < tail.size(); i++) {
+    x_vals.push_back(tail[i][0]);
+    y_vals.push_back(tail[i][1]);
   }
   
-  // Keep lane, no lane change, laneShift = 0;
-  vector<vector<double>> more_ref_points = extendRefPoints(ego, map, 0);
-  for (int i = 0; i < more_ref_points.size(); i++) {
-    x_vals.push_back(more_ref_points[i][0]);
-    y_vals.push_back(more_ref_points[i][1]);
-  }
-  
-  for (int i = 1; i < TOTAL_STEPS; i++) {
-    double s = calcPolynomial(coeff, i*0.02);
+  for (int i = 1; i < (int)(TOTAL_STEPS/20); i++) {
+    double s = calcPolynomial(coeff, i*0.02*20);
     double d = ego.get_lane() * 4.0 + 2;
     
     vector<double> xy = getXY(s,d,map.s,map.x,map.y);
-    if (DEBUG) {
-//      cout << xy[0] << " " << xy[1] << endl;
-    }
+    
     eval_points.push_back(xy);
+    
+    x_vals.push_back(xy[0]);
+    y_vals.push_back(xy[1]);
   }
-
+  
+  vector<vector<double>> refs_points;
+  for (int i = 1; i < 4; i++) {
+    vector<double> xy = getXY(ego.s+50+20*i, ego.get_lane()*4.0+2, map.s, map.x, map.y);
+    
+    x_vals.push_back(xy[0]);
+    y_vals.push_back(xy[1]);
+  }
+  
   return spline_fit(ego, x_vals, y_vals, eval_points);
 }
 

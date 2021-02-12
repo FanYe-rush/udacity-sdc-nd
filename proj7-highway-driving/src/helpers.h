@@ -312,16 +312,6 @@ double getCurrentSpeed(const vector<double> &x_vals, const vector<double> &y_val
   return sqrt(vx*vx+vy*vy);
 }
 
-// Get additional refence points ahead in the relevant lane
-// laneShift = 0: same lane, -1: left change, 1: right change;
-vector<vector<double>> extendRefPoints(Ego ego, const Mapdata &map, int laneShift) {
-  vector<vector<double>> refs_points;
-  for (int i = 0; i < 4; i++) {
-    refs_points.push_back(getXY(ego.s + 10 + i*15, (ego.get_lane() + laneShift)*4.0+2, map.s, map.x, map.y));
-  }
-  return refs_points;
-}
-
 // predict where this given car would be after time T from now.
 Car simulate(Car current, double T, const Mapdata &mapdata) {
   Car future;

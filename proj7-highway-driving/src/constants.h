@@ -3,8 +3,8 @@
 
 bool DEBUG = true;
 
-int TOTAL_STEPS = 100;
-int REGEN_THRESHOLD = 70;
+int TOTAL_STEPS = 60;
+int REGEN_THRESHOLD = 40;
 
 // How long in the future do we look forward for prediction/planning;
 double horizon = 2.0;
