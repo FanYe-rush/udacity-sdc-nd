@@ -187,6 +187,7 @@ struct Ego {
   double d;
   double yaw;
   double v;
+  double a;
   
   State state;
   
@@ -245,7 +246,6 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, do
   }
   return result;
 }
-
 
 // Return -1 if it's inavlid
 int getTargetLane(Ego ego, State next) {
@@ -336,6 +336,14 @@ Car simulate(Car current, double T, const Mapdata &mapdata) {
   
   future.s = frenet[0];
   future.d = frenet[1];
+}
+
+vector<Car> predictTraffic(vector<Car> traffic, double T, const Mapdata &mapdata) {
+  vector<Car> future;
+  for (int i = 0; i < traffic.size(); i++) {
+    future.push_back(simulate(traffic[i], T, mapdata));
+  }
+  return future;
 }
 
 //========================================================================
