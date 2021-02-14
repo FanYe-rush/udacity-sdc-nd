@@ -31,6 +31,7 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
   double vx;
   double vy;
   double ref_v;
+  double ref_a;
   
   if (prev_x_vals.size() < 2) {
     ref_x = ego.x;
@@ -40,22 +41,36 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
     
     ref_yaw = ego.yaw;
     ref_v = ego.v;
+    ref_a = 0;
   } else {
     ref_x = prev_x_vals[prev_x_vals.size()-1];
     prev_x = prev_x_vals[prev_x_vals.size()-2];
+    double pprev_x = prev_x_vals[prev_x_vals.size()-3];
     ref_y = prev_y_vals[prev_y_vals.size()-1];
     prev_y = prev_y_vals[prev_y_vals.size()-2];
+    double pprev_y = prev_y_vals[prev_y_vals.size()-3];
     
     dx = ref_x - prev_x;
     dy = ref_y - prev_y;
+    
+    double prev_dx = prev_x - pprev_x;
+    double prev_dy = prev_y - pprev_y;
     
     ref_yaw = rad2deg(atan2(dy, dx));
     
     vx = dx / 0.02;
     vy = dy / 0.02;
     
+    double prev_vx = prev_dx / 0.02;
+    double prev_vy = prev_dy / 0.02;
+    double prev_ref_v = sqrt(prev_vx*prev_vx + prev_vy*prev_vy);
+    
     ref_v = sqrt(vx*vx+vy*vy);
+    
+    ref_a = (ref_v - prev_ref_v) / 0.02;
   }
+  
+  cout << "ref_a " << ref_a << endl;
 
   vector<vector<double>> trail;
   trail.push_back({prev_x, prev_y});
@@ -64,6 +79,7 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
   Ego extended_ego;
   extended_ego.yaw = ref_yaw;
   extended_ego.v = ref_v;
+  extended_ego.a = ref_a;
   extended_ego.x = ref_x;
   extended_ego.y = ref_y;
   if (prev_x_vals.size() > 0) {
@@ -100,8 +116,6 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
     coeff = generateLongiSpeedKeepingPathPoly(ego);
   }
   
-  vector<vector<double>> eval_points;
-  
   // Points to be fitted by spline.
   vector<double> x_vals;
   vector<double> y_vals;
@@ -109,16 +123,6 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
   for (int i = 0; i < tail.size(); i++) {
     x_vals.push_back(tail[i][0]);
     y_vals.push_back(tail[i][1]);
-  }
-  
-  for (int i = 3; i < 5; i++) {
-    double s = calcPolynomial(coeff, i*0.02*10);
-    double d = ego.get_lane() * 4.0 + 2;
-    
-    vector<double> xy = getXY(s,d,map.s,map.x,map.y);
-    
-    x_vals.push_back(xy[0]);
-    y_vals.push_back(xy[1]);
   }
   
   vector<vector<double>> refs_points;
@@ -129,28 +133,21 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
     y_vals.push_back(xy[1]);
   }
   
-  for (int i = 1; i < TOTAL_STEPS; i+=INTERPOLATE_STEP_SIZE) {
-    double s = calcPolynomial(coeff, i*0.02);
-    double d = ego.get_lane() * 4.0 + 2;
-    
-    vector<double> xy = getXY(s,d,map.s,map.x,map.y);
-    
-    eval_points.push_back(xy);
-  }
-  
-  return spline_fit(ego, x_vals, y_vals, eval_points);
+  return spline_fit(ego, map, x_vals, y_vals, coeff);
 }
 
 
 vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int foward_steps) {
   double s = ego.s;
   double v = min(ego.v, speed_limit);
-  double a = 0;
+  double a = ego.a;
   
-  double dt = 2.0;
+  double dt = 3.0;
   
   double targetS = lv.s + dt * lv.get_speed() - d0;
-  double targetA = 0;
+  double targetA = lv.a;
+  targetA = min(targetA, max_acc);
+  targetA = max(targetA, -max_acc);
   double targetV = min(lv.get_speed() + dt * targetA, speed_limit);
   
   cout << "current s " << ego.s << " following target " << targetS << " " << targetV << " " << targetA << endl;
@@ -162,12 +159,12 @@ vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int foward_steps)
 vector<double> generateLongiSpeedKeepingPathPoly(Ego ego) {
   double s = ego.s;
   double v = min(ego.v, speed_limit);
-  double a = 0;
+  double a = ego.a;
   
   double dt = 3.0;
   
-  double targetS = s + dt * (speed_limit + v) / 2;
-  double targetV = speed_limit;
+  double targetV = min(speed_limit, v + max_acc*dt);
+  double targetS = s + dt * (targetV + v) / 2;
   double targetA = 0;
   
   // TODO: add noise to goal and dt to generate a bunch of options.

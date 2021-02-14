@@ -30,8 +30,9 @@ vector<double> ptg(const vector<double> &current, const vector<double> &goal, do
 }
 
 
-vector<vector<double>> spline_fit(Ego ego, const vector<double> &x_vals, const vector<double> &y_vals,
-                                  const vector<vector<double>> &eval_points) {
+vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
+                                  const vector<double> &x_vals, const vector<double> &y_vals,
+                                  const vector<double> &path_coeff) {
   tk::spline s;
   
   vector<double> transformed_x, transformed_y;
@@ -45,26 +46,36 @@ vector<vector<double>> spline_fit(Ego ego, const vector<double> &x_vals, const v
   
   s.set_points(transformed_x, transformed_y);
   
+  double current_v = ego.v;
+  
   vector<vector<double>> spline_points;
-  for (int i = 0; i < eval_points.size()-1; i++) {
-    double ego_x;
-    double ego_y;
+  
+  double current_x = 0;
+  double current_y = 0;
+  double current_angle = atan2(s(1)-s(0), 1);
+  
+  for (int i = 1; i < TOTAL_STEPS; i++) {
+    double dt = i * 0.02;
     
-    vector<double> map_xy;
-    
-    vector<double> ego_xy = transformToEgoCorrd(ego, eval_points[i][0], eval_points[i][1]);
-    vector<double> next_ego_xy = transformToEgoCorrd(ego, eval_points[i+1][0], eval_points[i+1][1]);
-    
-    double step_size = (next_ego_xy[0] - ego_xy[0]) / INTERPOLATE_STEP_SIZE;
-    
-    for (int step=0; step<INTERPOLATE_STEP_SIZE; step++) {
-      double ego_x = ego_xy[0] + step_size * step;
-      double ego_y = s(ego_x);
-      
-      vector<double> map_xy = transformFromEgoCorrd(ego, ego_x, ego_y);
-      
-      spline_points.push_back(map_xy);
+    double current_v = 0;
+    double t = 1;
+    for (int k = 1; k < 6; k++) {
+      current_v += k * path_coeff[k] * t;
+      t *= dt;
     }
+    current_v = min(current_v, speed_limit);
+
+    double dx = current_v * 0.02 * cos(current_angle);
+    
+    double next_x = current_x + dx;
+    double next_y = s(next_x);
+  
+    vector<double> map_xy = transformFromEgoCorrd(ego, next_x, next_y);
+    spline_points.push_back(map_xy);
+    
+    current_angle = atan2(next_y - current_y, next_x - current_x);
+    current_x = next_x;
+    current_y = next_y;
   }
   
   return spline_points;
