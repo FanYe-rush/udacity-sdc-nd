@@ -158,11 +158,9 @@ int main() {
             getOptimalNextState(ego, traffic);
             
             // trajectory gen generates a trajectory
-            
             vector<vector<double>> trajectory = generateTrajectory(ego, traffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
             
             // populate trajectory into next_x_vals, next_y_vals
-            
             for (int i = 0; i < TOTAL_STEPS - next_x_vals.size(); i++) {
               next_x_vals.push_back(trajectory[i][0]);
               next_y_vals.push_back(trajectory[i][1]);

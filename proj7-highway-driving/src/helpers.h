@@ -288,56 +288,12 @@ void updateTrafficCorrdBasedOnEgoLocation(Ego ego, vector<Car> &traffic) {
   }
 }
 
-vector<vector<double>> extendPreviousPath(const vector<double> &x_vals, const vector<double> &y_vals, int steps) {
-  double x_diff = x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2];
-  double y_diff = y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2];
-  
-  vector<vector<double>> additionalPoints;
-  double base_x = x_vals[x_vals.size()-1];
-  double base_y = y_vals[y_vals.size()-1];
-  
-  for (int i = 1; i <= steps; i++) {
-    double x = base_x + x_diff*i;
-    double y = base_y + y_diff*i;
-    additionalPoints.push_back({x,y});
-  }
-  return additionalPoints;
-}
-
-double getCurrentAngle(const vector<double> &x_vals, const vector<double> &y_vals) {
-  double dx = (x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2]);
-  double dy = (y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2]);
-  return rad2deg(atan2(dy, dx));
-}
-
-double getCurrentSpeed(const vector<double> &x_vals, const vector<double> &y_vals) {
-  double vx = (x_vals[x_vals.size()-1] - x_vals[x_vals.size()-2]) / 0.02;
-  double vy = (y_vals[y_vals.size()-1] - y_vals[y_vals.size()-2]) / 0.02;
-  return sqrt(vx*vx+vy*vy);
-}
-
 //========================================================================
 //Converting any points in map corrdinates to/from ego car centered system
 vector<double> transformToEgoCorrd(double ref_x, double ref_y, double yaw, double x, double y) {
   double shift_x = x - ref_x;
   double shift_y = y - ref_y;
   
-//  double car_angle = deg2rad(yaw);
-//  double vector_angle = atan2(shift_y, shift_x);
-//
-//  double norm = sqrt(shift_x*shift_x + shift_y*shift_y);
-//
-//  double new_angle = vector_angle - car_angle;
-//  while (new_angle > M_PI/2) {
-//    new_angle -= M_PI;
-//  }
-//  while (new_angle < -M_PI/2) {
-//    new_angle += M_PI;
-//  }
-//
-//  double rotate_x = norm * cos(new_angle);
-//  double rotate_y = norm * sin(new_angle);
-
   double ref_yaw = deg2rad(yaw);
   
   if (ref_yaw > M_PI) {
@@ -354,17 +310,6 @@ vector<double> transformToEgoCorrd(double ref_x, double ref_y, double yaw, doubl
 }
 
 vector<double> transformFromEgoCorrd(double ref_x, double ref_y, double yaw, double x, double y) {
-//  double vector_angle = atan2(y, x);
-//  double car_angle = deg2rad(yaw);
-//  double map_angle = vector_angle + car_angle;
-//
-//  cout << "angle " << map_angle << endl;
-//  double norm = sqrt(x*x + y*y);
-//
-//  double map_x = norm * cos(map_angle) + ref_x;
-//  double map_y = norm * sin(map_angle) + ref_y;
-//  return {map_x, map_y};
-  
   double ref_yaw = -deg2rad(yaw);
   if (ref_yaw > M_PI) {
     ref_yaw -= M_PI;
@@ -399,11 +344,6 @@ bool findLeadingCar(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar
   } else {
     return false;
   }
-}
-
-// Find vehicle right behind ego car in the target lane
-bool findChasingCar(Ego ego, const vector<Car> &traffic, int lane, Car &foundCar) {
-  return false;
 }
 
 #endif  // HELPERS_H

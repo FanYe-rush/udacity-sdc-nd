@@ -90,14 +90,6 @@ vector<vector<double>> generateTrajectory(Ego &ego, vector<Car> traffic, const M
   }
 
   return generateTrajectory(extended_ego, traffic, map, trail, prev_x_vals.size());
-  
-//  if (ego.state == KL) {
-//    return generateTrajectory(extended_ego, 0, traffic, map, trail, prev_x_vals.size());
-//  } else if (ego.state == RLS) {
-//    return generateTrajectory(extended_ego, 1, traffic, map, trail, prev_x_vals.size());
-//  } else if (ego.state == LLS) {
-//    return generateTrajectory(extended_ego, -1, traffic, map, trail, prev_x_vals.size());
-//  }
 }
 
 vector<vector<double>> generateTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int forward_steps) {
