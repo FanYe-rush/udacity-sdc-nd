@@ -1,6 +1,7 @@
 #ifndef ptg_h
 #define ptg_h
 
+#include <algorithm>
 #include <vector>
 #include "spline/spline.h"
 #include "Eigen-3.3/Eigen/Dense"
@@ -39,20 +40,23 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
   vector<double> transformed_eval_x;
   
   for (int i = 0; i < x_vals.size(); i++) {
-    vector<double> ego_xy = transformToEgoCorrd(ego, x_vals[i], y_vals[i]);
+    vector<double> ego_xy = transformToEgoCorrd(ego.x, ego.y, ego.yaw, x_vals[i], y_vals[i]);
     transformed_x.push_back(ego_xy[0]);
     transformed_y.push_back(ego_xy[1]);
   }
   
+  if (transformed_x[0] > 0) {
+    transformed_x[0] = -transformed_x[0];
+    transformed_y[0] = -transformed_y[0];
+  }
+
   s.set_points(transformed_x, transformed_y);
-  
-  double current_v = ego.v;
   
   vector<vector<double>> spline_points;
   
   double current_x = 0;
   double current_y = 0;
-  double current_angle = atan2(s(1)-s(0), 1);
+  double current_angle;
   
   for (int i = 1; i < TOTAL_STEPS; i++) {
     double dt = i * 0.02;
@@ -64,21 +68,26 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
       t *= dt;
     }
     current_v = min(current_v, speed_limit);
-
+    current_angle = atan2(s(current_x+0.1)-s(current_x), 0.1);
     double dx = current_v * 0.02 * cos(current_angle);
     
     double next_x = current_x + dx;
     double next_y = s(next_x);
   
-    vector<double> map_xy = transformFromEgoCorrd(ego, next_x, next_y);
+    vector<double> map_xy = transformFromEgoCorrd(ego.x, ego.y, ego.yaw, next_x, next_y);
     spline_points.push_back(map_xy);
     
     current_angle = atan2(next_y - current_y, next_x - current_x);
+    
     current_x = next_x;
     current_y = next_y;
   }
   
   return spline_points;
+}
+
+double check_same_sign(double a, double b) {
+  return ((a > 0) && (b > 0)) || ((a < 0) && (b < 0));
 }
 
 #endif /* ptg_h */

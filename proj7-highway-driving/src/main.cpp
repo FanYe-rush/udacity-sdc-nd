@@ -152,8 +152,8 @@ int main() {
           if (previous_path_x.size() < REGEN_THRESHOLD) {
             // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
             updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
-
-            // behavior generate next state, or based on state generate target config?
+            
+            // behavior generate next state
             State optimal = getOptimalNextState(ego, traffic);
             
             // trajectory gen generates a trajectory

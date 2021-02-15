@@ -12,7 +12,7 @@ using std::abs;
 using std::cout;
 using std::endl;
 
-vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map,
+vector<vector<double>> generateTrajectory(Ego ego, int lane_change, const vector<Car> &traffic, const Mapdata &map,
                                        const vector<vector<double>> &trail, int forward_steps);
 
 vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int forward_steps);
@@ -69,8 +69,6 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
     
     ref_a = (ref_v - prev_ref_v) / 0.02;
   }
-  
-  cout << "ref_a " << ref_a << endl;
 
   vector<vector<double>> trail;
   trail.push_back({prev_x, prev_y});
@@ -89,28 +87,30 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
     extended_ego.s = ego.s;
     extended_ego.d = ego.d;
   }
-  
-//  vector<Car> prediction = predictTraffic(traffic, prev_x_vals.size(), map);
 
-  return generateKeepLaneTrajectory(extended_ego, traffic, map, trail, prev_x_vals.size());
-//
-//  if (next == KL) {
-//    return generateKeepLaneTrajectory(extended_ego, traffic, map, extension);
-//  } else {
-//    return vector<Car>(0);
-//  }
+  
+
+  if (next == KL) {
+    return generateTrajectory(extended_ego, 0, traffic, map, trail, prev_x_vals.size());
+  } else if ((next == PRLS) || (next == RLS)) {
+    return generateTrajectory(extended_ego, 1, traffic, map, trail, prev_x_vals.size());
+  } else if ((next == PLLS) || (next == LLS)) {
+    return generateTrajectory(extended_ego, -1, traffic, map, trail, prev_x_vals.size());
+  }
 }
 
-vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int foward_steps) {
+vector<vector<double>> generateTrajectory(Ego ego, int lane_change, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int forward_steps) {
+  
+  int target_lane = ego.get_lane()+lane_change;
   
   Car lv;
-  bool foundLeadingCar = findLeadingCar(ego, traffic, ego.get_lane(), lv);
+  bool foundLeadingCar = findLeadingCar(ego, traffic, target_lane, lv);
   
   vector<double> coeff;
   
   if (foundLeadingCar) {
     cout << "following" << endl;
-    coeff = generateLongiFollowingPathPoly(ego, lv, foward_steps);
+    coeff = generateLongiFollowingPathPoly(ego, lv, forward_steps);
   } else {
     cout << "keep speed" << endl;
     coeff = generateLongiSpeedKeepingPathPoly(ego);
@@ -127,7 +127,7 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
   
   vector<vector<double>> refs_points;
   for (int i = 1; i < 4; i++) {
-    vector<double> xy = getXY(ego.s+30*i, ego.get_lane()*4.0+2, map.s, map.x, map.y);
+    vector<double> xy = getXY(ego.s+30*i, target_lane*4.0+2, map.s, map.x, map.y);
     
     x_vals.push_back(xy[0]);
     y_vals.push_back(xy[1]);
@@ -137,18 +137,18 @@ vector<vector<double>> generateKeepLaneTrajectory(Ego ego, const vector<Car> &tr
 }
 
 
-vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int foward_steps) {
+vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int forward_steps) {
   double s = ego.s;
   double v = min(ego.v, speed_limit);
   double a = ego.a;
   
   double dt = 3.0;
   
-  double targetS = lv.s + dt * lv.get_speed() - d0;
+  double targetS = lv.s + (forward_steps*0.02+dt-tau)*lv.get_speed() - d0;
   double targetA = lv.a;
   targetA = min(targetA, max_acc);
   targetA = max(targetA, -max_acc);
-  double targetV = min(lv.get_speed() + dt * targetA, speed_limit);
+  double targetV = min(lv.get_speed() + (dt-tau) * targetA, speed_limit);
   
   cout << "current s " << ego.s << " following target " << targetS << " " << targetV << " " << targetA << endl;
   

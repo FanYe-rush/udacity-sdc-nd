@@ -312,68 +312,65 @@ double getCurrentSpeed(const vector<double> &x_vals, const vector<double> &y_val
   return sqrt(vx*vx+vy*vy);
 }
 
-// predict where this given car would be after time T from now.
-Car simulate(Car current, double T, const Mapdata &mapdata) {
-  Car future;
-  
-  future.id = current.id;
-  // Assume constant acceleration
-  future.a = current.a;
-  
-  // Break acceleration apart in x, y axis
-  double v = current.get_speed();
-  double ax = current.a * (current.vx / v);
-  double ay = current.a * (current.vy / v);
-  
-  future.vx = current.vx + ax * T;
-  future.vy = current.vy + ay * T;
-  
-  future.x = current.x + T * current.vx + 0.5 * ax * T * T;
-  future.y = current.y + T * current.vy + 0.5 * ay * T * T;
-  
-  double heading = atan2(future.vy, future.vx);
-  vector<double> frenet = getFrenet(future.x, future.y, heading, mapdata.x, mapdata.y);
-  
-  future.s = frenet[0];
-  future.d = frenet[1];
-}
-
-vector<Car> predictTraffic(vector<Car> traffic, double T, const Mapdata &mapdata) {
-  vector<Car> future;
-  for (int i = 0; i < traffic.size(); i++) {
-    future.push_back(simulate(traffic[i], T, mapdata));
-  }
-  return future;
-}
-
 //========================================================================
 //Converting any points in map corrdinates to/from ego car centered system
-vector<double> transformToEgoCorrd(Ego ego, double x, double y) {
-  double shift_x = x - ego.x;
-  double shift_y = y - ego.y;
+vector<double> transformToEgoCorrd(double ref_x, double ref_y, double yaw, double x, double y) {
+  double shift_x = x - ref_x;
+  double shift_y = y - ref_y;
   
-  double car_angle = deg2rad(ego.yaw);
-  double vector_angle = atan2(shift_y, shift_x);
+//  double car_angle = deg2rad(yaw);
+//  double vector_angle = atan2(shift_y, shift_x);
+//
+//  double norm = sqrt(shift_x*shift_x + shift_y*shift_y);
+//
+//  double new_angle = vector_angle - car_angle;
+//  while (new_angle > M_PI/2) {
+//    new_angle -= M_PI;
+//  }
+//  while (new_angle < -M_PI/2) {
+//    new_angle += M_PI;
+//  }
+//
+//  double rotate_x = norm * cos(new_angle);
+//  double rotate_y = norm * sin(new_angle);
+
+  double ref_yaw = deg2rad(yaw);
   
-  double norm = sqrt(shift_x*shift_x + shift_y*shift_y);
+  if (ref_yaw > M_PI) {
+    ref_yaw -= M_PI;
+  }
+  if (ref_yaw < -M_PI) {
+    ref_yaw += M_PI;
+  }
   
-  double rotate_x = norm * cos(vector_angle - car_angle);
-  double rotate_y = norm * sin(vector_angle - car_angle);
-  
+  double rotate_x = shift_y * sin(ref_yaw) + shift_x * cos(ref_yaw);
+  double rotate_y = shift_y * cos(ref_yaw) - shift_x * sin(ref_yaw);
+
   return {rotate_x, rotate_y};
 }
 
-vector<double> transformFromEgoCorrd(Ego ego, double x, double y) {
-  double vector_angle = atan2(y, x);
-  double car_angle = deg2rad(ego.yaw);
-  double map_angle = vector_angle + car_angle;
+vector<double> transformFromEgoCorrd(double ref_x, double ref_y, double yaw, double x, double y) {
+//  double vector_angle = atan2(y, x);
+//  double car_angle = deg2rad(yaw);
+//  double map_angle = vector_angle + car_angle;
+//
+//  cout << "angle " << map_angle << endl;
+//  double norm = sqrt(x*x + y*y);
+//
+//  double map_x = norm * cos(map_angle) + ref_x;
+//  double map_y = norm * sin(map_angle) + ref_y;
+//  return {map_x, map_y};
   
-  double norm = sqrt(x*x + y*y);
-  
-  double map_x = norm * cos(map_angle) + ego.x;
-  double map_y = norm * sin(map_angle) + ego.y;
-  
-  return {map_x, map_y};
+  double ref_yaw = -deg2rad(yaw);
+  if (ref_yaw > M_PI) {
+    ref_yaw -= M_PI;
+  }
+  if (ref_yaw < -M_PI) {
+    ref_yaw += M_PI;
+  }
+  double map_x = y * sin(ref_yaw) + x * cos(ref_yaw);
+  double map_y = y * cos(ref_yaw) - x * sin(ref_yaw);
+  return {map_x + ref_x, map_y + ref_y};
 }
 //=========================================================================
 
