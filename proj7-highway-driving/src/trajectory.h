@@ -25,71 +25,26 @@ vector<vector<double>> generateTrajectory(Ego &ego, vector<Car> traffic, const M
   double prev_x;
   double ref_y;
   double prev_y;
-  double dx;
-  double dy;
-  double ref_yaw;
-  double vx;
-  double vy;
-  double ref_v;
-  double ref_a;
   
   if (prev_x_vals.size() < 2) {
     ref_x = ego.x;
     prev_x = ego.x - cos(deg2rad(ego.yaw));
     ref_y = ego.y;
     prev_y = ego.y - sin(deg2rad(ego.yaw));
-    
-    ref_yaw = ego.yaw;
-    ref_v = ego.v;
-    ref_a = 0;
+
   } else {
     ref_x = prev_x_vals[prev_x_vals.size()-1];
     prev_x = prev_x_vals[prev_x_vals.size()-2];
-    double pprev_x = prev_x_vals[prev_x_vals.size()-3];
+   
     ref_y = prev_y_vals[prev_y_vals.size()-1];
     prev_y = prev_y_vals[prev_y_vals.size()-2];
-    double pprev_y = prev_y_vals[prev_y_vals.size()-3];
-    
-    dx = ref_x - prev_x;
-    dy = ref_y - prev_y;
-    
-    double prev_dx = prev_x - pprev_x;
-    double prev_dy = prev_y - pprev_y;
-    
-    ref_yaw = rad2deg(atan2(dy, dx));
-    
-    vx = dx / 0.02;
-    vy = dy / 0.02;
-    
-    double prev_vx = prev_dx / 0.02;
-    double prev_vy = prev_dy / 0.02;
-    double prev_ref_v = sqrt(prev_vx*prev_vx + prev_vy*prev_vy);
-    
-    ref_v = sqrt(vx*vx+vy*vy);
-    
-    ref_a = (ref_v - prev_ref_v) / 0.02;
   }
 
   vector<vector<double>> trail;
   trail.push_back({prev_x, prev_y});
   trail.push_back({ref_x, ref_y});
 
-  Ego extended_ego;
-  extended_ego.yaw = ref_yaw;
-  extended_ego.v = ref_v;
-  extended_ego.a = ref_a;
-  extended_ego.x = ref_x;
-  extended_ego.y = ref_y;
-  extended_ego.target_lane = ego.target_lane;
-  if (prev_x_vals.size() > 0) {
-    extended_ego.s = prev_s;
-    extended_ego.d = prev_d;
-  } else {
-    extended_ego.s = ego.s;
-    extended_ego.d = ego.d;
-  }
-
-  return generateTrajectory(extended_ego, traffic, map, trail, prev_x_vals.size());
+  return generateTrajectory(ego, traffic, map, trail, prev_x_vals.size());
 }
 
 vector<vector<double>> generateTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int forward_steps) {
@@ -137,7 +92,7 @@ vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int forward_steps
   
   double dt = 3.0;
   
-  double targetS = lv.s + (forward_steps*0.02+dt-tau)*lv.get_speed() - d0;
+  double targetS = lv.s + (dt-tau)*lv.get_speed() - d0;
   double targetA = lv.a;
   targetA = min(targetA, max_acc);
   targetA = max(targetA, -max_acc);

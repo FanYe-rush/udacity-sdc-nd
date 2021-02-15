@@ -4,10 +4,7 @@
 bool DEBUG = true;
 
 int TOTAL_STEPS = 50;
-int REGEN_THRESHOLD = 40;
-
-// How long in the future do we look forward for prediction/planning;
-double horizon = 2.0;
+int REGEN_THRESHOLD = 20;
 
 // Time difference between each trajectory state (in s)
 double t_interval = 0.02;

@@ -288,6 +288,116 @@ void updateTrafficCorrdBasedOnEgoLocation(Ego ego, vector<Car> &traffic) {
   }
 }
 
+Ego extractFutureEgoState(Ego &ego, const vector<Car> &traffic, const vector<double> &prev_x_vals,
+                          const vector<double> &prev_y_vals, double prev_s, double prev_d) {
+  double ref_x;
+  double prev_x;
+  double ref_y;
+  double prev_y;
+  double dx;
+  double dy;
+  double ref_yaw;
+  double vx;
+  double vy;
+  double ref_v;
+  double ref_a;
+  
+  if (prev_x_vals.size() < 2) {
+    ref_x = ego.x;
+    prev_x = ego.x - cos(deg2rad(ego.yaw));
+    ref_y = ego.y;
+    prev_y = ego.y - sin(deg2rad(ego.yaw));
+    
+    ref_yaw = ego.yaw;
+    ref_v = ego.v;
+    ref_a = 0;
+  } else {
+    ref_x = prev_x_vals[prev_x_vals.size()-1];
+    prev_x = prev_x_vals[prev_x_vals.size()-2];
+    double pprev_x = prev_x_vals[prev_x_vals.size()-3];
+    ref_y = prev_y_vals[prev_y_vals.size()-1];
+    prev_y = prev_y_vals[prev_y_vals.size()-2];
+    double pprev_y = prev_y_vals[prev_y_vals.size()-3];
+    
+    dx = ref_x - prev_x;
+    dy = ref_y - prev_y;
+    
+    double prev_dx = prev_x - pprev_x;
+    double prev_dy = prev_y - pprev_y;
+    
+    ref_yaw = rad2deg(atan2(dy, dx));
+    
+    vx = dx / 0.02;
+    vy = dy / 0.02;
+    
+    double prev_vx = prev_dx / 0.02;
+    double prev_vy = prev_dy / 0.02;
+    double prev_ref_v = sqrt(prev_vx*prev_vx + prev_vy*prev_vy);
+    
+    ref_v = sqrt(vx*vx+vy*vy);
+    
+    ref_a = (ref_v - prev_ref_v) / 0.02;
+  }
+
+  vector<vector<double>> trail;
+  trail.push_back({prev_x, prev_y});
+  trail.push_back({ref_x, ref_y});
+
+  Ego extended_ego;
+  extended_ego.yaw = ref_yaw;
+  extended_ego.v = ref_v;
+  extended_ego.a = ref_a;
+  extended_ego.x = ref_x;
+  extended_ego.y = ref_y;
+  extended_ego.target_lane = ego.target_lane;
+  if (prev_x_vals.size() > 0) {
+    extended_ego.s = prev_s;
+    extended_ego.d = prev_d;
+  } else {
+    extended_ego.s = ego.s;
+    extended_ego.d = ego.d;
+  }
+  
+  return extended_ego;
+}
+
+vector<Car> predictTraffic(const vector<Car> &traffic, double T, const Mapdata &map) {
+  vector<Car> prediction;
+  
+  for (int i = 0; i < traffic.size(); i++) {
+    Car future;
+    Car current = traffic[i];
+    
+    future.id = current.id;
+    future.a = current.a;
+    
+    double heading = atan2(current.vy, current.vx);
+    
+    double v = current.get_speed()+current.a*T;
+    if (current.vx < 1.0e-5) {
+      future.vy = v;
+      future.vx = current.vx;
+    } else if (current.vy < 1.0e-5) {
+      future.vx = v;
+      future.vy = current.vy;
+    } else {
+      future.vx = v * cos(heading);
+      future.vy = v * sin(heading);
+    }
+    
+    future.x = current.x + T * (current.vx + future.vx) / 2;
+    future.y = current.y + T * (current.vy + future.vy) / 2;
+    
+    vector<double> sd = getFrenet(future.x, future.y, heading, map.x, map.y);
+    future.s = sd[0];
+    future.d = current.d;
+    
+    prediction.push_back(future);
+  }
+  
+  return prediction;
+}
+
 //========================================================================
 //Converting any points in map corrdinates to/from ego car centered system
 vector<double> transformToEgoCorrd(double ref_x, double ref_y, double yaw, double x, double y) {

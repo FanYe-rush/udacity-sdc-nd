@@ -151,14 +151,21 @@ int main() {
           }
 
           if (previous_path_x.size() < REGEN_THRESHOLD) {
+            Ego futureEgo = extractFutureEgoState(ego, traffic, previous_path_x, previous_path_y, end_path_s, end_path_d);
+            
+            vector<Car> predictedTraffic = predictTraffic(traffic, previous_path_x.size()*0.02, mapdata);
+            
             // Update observed vehicle's s corrdinate based on ego's location (for end of the track warpping)
-            updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
+            updateTrafficCorrdBasedOnEgoLocation(futureEgo, predictedTraffic);
             
             // behavior generate next state
-            getOptimalNextState(ego, traffic);
+            getOptimalNextState(futureEgo, predictedTraffic);
+            
+            ego.state = futureEgo.state;
+            ego.target_lane = futureEgo.target_lane;
             
             // trajectory gen generates a trajectory
-            vector<vector<double>> trajectory = generateTrajectory(ego, traffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
+            vector<vector<double>> trajectory = generateTrajectory(futureEgo, predictedTraffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
             
             // populate trajectory into next_x_vals, next_y_vals
             for (int i = 0; i < TOTAL_STEPS - next_x_vals.size(); i++) {

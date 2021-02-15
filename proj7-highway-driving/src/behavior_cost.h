@@ -12,8 +12,8 @@ using std::pow;
 using std::exp;
 using std::abs;
 
-const int CLEAR_RANGE_AHEAD = 12;
-const int CLEAR_RANGE_BEHIND = 10;
+const int CLEAR_RANGE_AHEAD = 15;
+const int CLEAR_RANGE_BEHIND = 15;
 
 const int COST_TYPES = 2;
 
