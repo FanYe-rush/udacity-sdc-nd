@@ -64,6 +64,7 @@ int main() {
   
   Ego ego;
   ego.state = KL;
+  ego.target_lane = 1;
   
   Mapdata mapdata;
   mapdata.s = map_waypoints_s;
@@ -154,11 +155,11 @@ int main() {
             updateTrafficCorrdBasedOnEgoLocation(ego, traffic);
             
             // behavior generate next state
-            State optimal = getOptimalNextState(ego, traffic);
+            getOptimalNextState(ego, traffic);
             
             // trajectory gen generates a trajectory
             
-            vector<vector<double>> trajectory = generateTrajectory(ego, optimal, traffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
+            vector<vector<double>> trajectory = generateTrajectory(ego, traffic, mapdata, next_x_vals, next_y_vals, end_path_s, end_path_d);
             
             // populate trajectory into next_x_vals, next_y_vals
             

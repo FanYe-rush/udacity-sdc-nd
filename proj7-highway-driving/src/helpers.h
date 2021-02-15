@@ -170,7 +170,10 @@ vector<double> getXY(double s, double d, const vector<double> &maps_s,
   return {x,y};
 }
 
-enum State {KL, PRLS, PLLS, RLS, LLS};
+enum State {
+  KL=0,
+  RLS=1,
+  LLS=2};
 
 struct Mapdata {
   vector<double> s;
@@ -190,6 +193,7 @@ struct Ego {
   double a;
   
   State state;
+  int target_lane=-1;
   
   int get_lane() const {
     return int(d / 4);
@@ -249,15 +253,15 @@ vector<Car> parseSensorFusionData(vector<vector<double>> data, const map<int, do
 
 // Return -1 if it's inavlid
 int getTargetLane(Ego ego, State next) {
-  int current_lane = ego.get_lane();;
+  int current_lane = ego.target_lane;
   
-  if ((next == RLS) || (next == PRLS)) {
+  if (next == RLS) {
     // Can't shift lane to right if already at the right most lane;
     if (current_lane == 2) {
       return -1;
     }
     return ego.get_lane() + 1;
-  } else if ((next == LLS) || (next == PLLS)) {
+  } else if (next == LLS) {
     // Can't shift lane to left if already at the left most lane;
     if (current_lane == 0) {
       return -1;

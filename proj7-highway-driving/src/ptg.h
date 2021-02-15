@@ -58,6 +58,8 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
   double current_y = 0;
   double current_angle;
   
+  double prev_v = ego.v;
+  
   for (int i = 1; i < TOTAL_STEPS; i++) {
     double dt = i * 0.02;
     
@@ -68,6 +70,8 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
       t *= dt;
     }
     current_v = min(current_v, speed_limit);
+    current_v = min(current_v, prev_v + 0.02*max_acc);
+    current_v = max(current_v, prev_v - 0.02*max_acc);
     current_angle = atan2(s(current_x+0.1)-s(current_x), 0.1);
     double dx = current_v * 0.02 * cos(current_angle);
     
@@ -81,6 +85,7 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
     
     current_x = next_x;
     current_y = next_y;
+    prev_v = current_v;
   }
   
   return spline_points;

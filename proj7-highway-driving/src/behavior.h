@@ -6,56 +6,54 @@
 #include "constants.h"
 #include "helpers.h"
 
+int COUNT_DOWN = 0;
+int CALM_DOWN_PERIOD = 50;
+
 vector<State> possibleNextSteps(Ego ego);
-vector<double> getLaneSpeed(Ego ego, const vector<Car> &traffic);
+vector<vector<double>> getLaneSpeedAndGap(Ego ego, const vector<Car> &traffic);
 int getFastestLane(const vector<double> &lane_speeds);
 
 // Calculates the optimal next state to take based on the current state, current car state, sensor data
-State getOptimalNextState(Ego ego, const vector<Car> &traffic) {
+void getOptimalNextState(Ego &ego, const vector<Car> &traffic) {
   vector<State> options = possibleNextSteps(ego);
   
   double min_cost = 9999999;
-  State best_option;
+  State best_option = KL;
   
-  vector<double> lane_speeds = getLaneSpeed(ego, traffic);
-  int ideal_lane = getFastestLane(lane_speeds);
+  vector<vector<double>> lane_stats = getLaneSpeedAndGap(ego, traffic);
 
   for (int i = 0; i < options.size(); i++) {
-    double cost = calculateStateTransitCost(ego, traffic, options[i], lane_speeds, ideal_lane);
+    double cost = calculateStateTransitCost(ego, traffic, options[i], lane_stats);
     if (cost < min_cost) {
       min_cost = cost;
       best_option = options[i];
     }
   }
   
-  cout << "best option is " + to_string(best_option) << endl;
+  ego.state = best_option;
+  ego.target_lane = getTargetLane(ego, best_option);
   
-  return best_option;
+  if (best_option != KL) {
+    COUNT_DOWN = CALM_DOWN_PERIOD;
+  }
+  
+  cout << "state " << to_string(ego.state) << " target lane " << ego.target_lane << endl;
 }
 
 vector<State> possibleNextSteps(Ego ego) {
-  vector<State> nextSteps = {KL};
+  vector<State> nextSteps;
   
-  switch (ego.state) {
-    case KL:
-      nextSteps.push_back(PRLS);
-      nextSteps.push_back(PLLS);
-      break;
-    case PRLS:
-      nextSteps.push_back(PRLS);
+  nextSteps.push_back(KL);
+  
+  if ((ego.d >= ego.target_lane*4.0-1.8) && (ego.d <= ego.target_lane*4.0+2.2)) {
+    if (COUNT_DOWN > 0) {
+      COUNT_DOWN -= 1;
+    }
+    
+    if (COUNT_DOWN == 0) {
       nextSteps.push_back(RLS);
-      break;
-    case PLLS:
-      nextSteps.push_back(PLLS);
       nextSteps.push_back(LLS);
-      break;
-    // now assume we can stay in lane shift state
-    case RLS:
-      nextSteps.push_back(RLS);
-      break;
-    case LLS:
-      nextSteps.push_back(LLS);
-      break;
+    }
   }
   
   return nextSteps;
@@ -63,35 +61,21 @@ vector<State> possibleNextSteps(Ego ego) {
 
 
 // Get the lowest speed of all vehicles observed in each lane ahead of the ego car.
-vector<double> getLaneSpeed(Ego ego, const vector<Car> &traffic) {
-  vector<double> speeds = {speed_limit,speed_limit,speed_limit};
+vector<vector<double>> getLaneSpeedAndGap(Ego ego, const vector<Car> &traffic) {
+  vector<vector<double>> stats = {{speed_limit, 9999},{speed_limit, 9999},{speed_limit, 9999}};
   
-  for (int i = 0; i < traffic.size(); i++) {
-    Car c = traffic[i];
-
-    if (c.s >= ego.s) {
-      int lane = c.get_lane();
-      speeds[lane] = min(c.get_speed(), speeds[lane]);
+  for (int lane = 0; lane < 3; lane++) {
+    Car c;
+    
+    bool found = findLeadingCar(ego, traffic, lane, c);
+  
+    if (found) {
+      stats[lane][0] = c.get_speed();
+      stats[lane][1] = c.s - ego.s;
     }
   }
 
-  if (DEBUG) {
-    cout << "speed limit is " << speeds[0] << " " << speeds[1] << " " << speeds[2] << endl;
-  }
-  
-  return speeds;
-}
-
-int getFastestLane(const vector<double> &lane_speeds) {
-  int ideal_lane = -1;
-  double max_v = 0;
-  for (int i = 0; i < 3; i++) {
-    if (lane_speeds[i] > max_v) {
-      max_v = lane_speeds[i];
-      ideal_lane = i;
-    }
-  }
-  return ideal_lane;
+  return stats;
 }
 
 #endif /* behavior_h */

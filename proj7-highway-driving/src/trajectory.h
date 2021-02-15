@@ -12,13 +12,13 @@ using std::abs;
 using std::cout;
 using std::endl;
 
-vector<vector<double>> generateTrajectory(Ego ego, int lane_change, const vector<Car> &traffic, const Mapdata &map,
+vector<vector<double>> generateTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map,
                                        const vector<vector<double>> &trail, int forward_steps);
 
 vector<double> generateLongiFollowingPathPoly(Ego ego, Car lv, int forward_steps);
 vector<double> generateLongiSpeedKeepingPathPoly(Ego ego);
 
-vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traffic, const Mapdata &map,
+vector<vector<double>> generateTrajectory(Ego &ego, vector<Car> traffic, const Mapdata &map,
                                const vector<double> &prev_x_vals, const vector<double> &prev_y_vals,
                                            double prev_s, double prev_d) {
   double ref_x;
@@ -80,6 +80,7 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
   extended_ego.a = ref_a;
   extended_ego.x = ref_x;
   extended_ego.y = ref_y;
+  extended_ego.target_lane = ego.target_lane;
   if (prev_x_vals.size() > 0) {
     extended_ego.s = prev_s;
     extended_ego.d = prev_d;
@@ -88,20 +89,20 @@ vector<vector<double>> generateTrajectory(Ego &ego, State next, vector<Car> traf
     extended_ego.d = ego.d;
   }
 
+  return generateTrajectory(extended_ego, traffic, map, trail, prev_x_vals.size());
   
-
-  if (next == KL) {
-    return generateTrajectory(extended_ego, 0, traffic, map, trail, prev_x_vals.size());
-  } else if ((next == PRLS) || (next == RLS)) {
-    return generateTrajectory(extended_ego, 1, traffic, map, trail, prev_x_vals.size());
-  } else if ((next == PLLS) || (next == LLS)) {
-    return generateTrajectory(extended_ego, -1, traffic, map, trail, prev_x_vals.size());
-  }
+//  if (ego.state == KL) {
+//    return generateTrajectory(extended_ego, 0, traffic, map, trail, prev_x_vals.size());
+//  } else if (ego.state == RLS) {
+//    return generateTrajectory(extended_ego, 1, traffic, map, trail, prev_x_vals.size());
+//  } else if (ego.state == LLS) {
+//    return generateTrajectory(extended_ego, -1, traffic, map, trail, prev_x_vals.size());
+//  }
 }
 
-vector<vector<double>> generateTrajectory(Ego ego, int lane_change, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int forward_steps) {
+vector<vector<double>> generateTrajectory(Ego ego, const vector<Car> &traffic, const Mapdata &map, const vector<vector<double>> &tail, int forward_steps) {
   
-  int target_lane = ego.get_lane()+lane_change;
+  int target_lane = ego.target_lane;
   
   Car lv;
   bool foundLeadingCar = findLeadingCar(ego, traffic, target_lane, lv);
