@@ -91,8 +91,4 @@ vector<vector<double>> spline_fit(Ego ego, const Mapdata &map,
   return spline_points;
 }
 
-double check_same_sign(double a, double b) {
-  return ((a > 0) && (b > 0)) || ((a < 0) && (b < 0));
-}
-
 #endif /* ptg_h */

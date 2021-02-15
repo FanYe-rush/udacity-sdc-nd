@@ -45,7 +45,7 @@ double calculateStateTransitCost(Ego ego, const vector<Car> &traffic, State next
   double gap_cost = (look_ahead_dist-result_gap) / look_ahead_dist;
 
   vector<double> costs = {speed_diff_cost, gap_cost};
-  vector<double> weights = {1.0, 2.0};
+  vector<double> weights = {1.0, 1.2};
 
   double total_cost = 0;
   for (int i = 0; i < COST_TYPES; i++) {
