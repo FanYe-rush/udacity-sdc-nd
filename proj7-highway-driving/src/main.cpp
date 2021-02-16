@@ -33,9 +33,7 @@ int main() {
   vector<double> map_waypoints_dy;
 
   // Waypoint map to read from
-  // TODO: revert back to relative path
-//  string map_file_ = "../data/highway_map.csv";
-  string map_file_ = "/Users/fanye/WorkSpace/Udacity/sdc-nano/projs/proj7-highway-driving/data/highway_map.csv";
+  string map_file_ = "../data/highway_map.csv";
   
   // The max s value before wrapping around the track back to 0
   double max_s = 6945.554;
