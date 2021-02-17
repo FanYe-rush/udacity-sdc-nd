@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include <string>
+
 class PID {
  public:
   /**
@@ -39,6 +41,8 @@ class PID {
   double i_error;
   double d_error;
 
+  double prev_cte;
+  
   /**
    * PID Coefficients
    */ 
