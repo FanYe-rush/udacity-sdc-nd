@@ -125,7 +125,7 @@ class WaypointUpdater(object):
             p.twist.twist.linear.x = min(velocity, wp.twist.twist.linear.x)
             temp_wp.append(p)
 
-        return p
+        return temp_wp
 
     def get_waypoint_velocity(self, waypoint):
         return waypoint.twist.twist.linear.x

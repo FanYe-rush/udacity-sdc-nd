@@ -2,13 +2,14 @@
 import rospy
 from scipy.spatial import KDTree
 from std_msgs.msg import Int32
-from geometry_msgs.msg import PoseStamped, Pose
+from geometry_msgs.msg import PoseStamped, Pose, TwistStamped
 from styx_msgs.msg import TrafficLightArray, TrafficLight
 from styx_msgs.msg import Lane
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from light_classification.tl_classifier import TLClassifier
 import tf
+import csv
 import cv2
 import yaml
 
@@ -34,8 +35,9 @@ class TLDetector(object):
         rely on the position of the light and the camera image to predict it.
         '''
         sub3 = rospy.Subscriber('/vehicle/traffic_lights', TrafficLightArray, self.traffic_cb)
-        # TODO: use image_raw instead
         sub6 = rospy.Subscriber('/image_color', Image, self.image_cb)
+
+        rospy.Subscriber('/current_velocity', TwistStamped, self.velocity_cb)
 
         config_string = rospy.get_param("/traffic_light_config")
         self.config = yaml.load(config_string)
@@ -54,7 +56,14 @@ class TLDetector(object):
         self.waypoints_2d = None
         self.waypoint_tree = None
 
+        self.img_count = 0
+        self.images = []
+        self.labels = []
+
         rospy.spin()
+
+    def velocity_cb(self, msg):
+        self.current_vel = msg.twist.linear.x
 
     def pose_cb(self, msg):
         self.pose = msg
@@ -79,6 +88,29 @@ class TLDetector(object):
         self.has_image = True
         self.camera_image = msg
         light_wp, state = self.process_traffic_lights()
+
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+
+        if state != TrafficLight.UNKNOWN:
+            if (state == TrafficLight.RED):
+                if (self.current_vel) and (self.current_vel > 1):
+                    self.images.append(cv_image)
+                    self.labels.append(state)
+            else:
+                self.images.append(cv_image) 
+                self.labels.append(state)  
+
+        if (len(self.images) > 50) or ((state == TrafficLight.UNKNOWN) and (len(self.images) > 0)):
+            for img in self.images:
+                cv2.imwrite('img/{0}.png'.format(self.img_count), img)
+                self.img_count += 1
+
+            with open('img/labels.csv', 'a', encoding='UTF8') as f:
+                writer = csv.writer(f)
+                writer.writerows(self.labels)
+
+            self.images.clear()
+            self.labels.clear()
 
         '''
         Publish upcoming red lights at camera frequency.
@@ -110,17 +142,6 @@ class TLDetector(object):
         """
         _, closest_idx = self.waypoint_tree.query([x,y], 1)
 
-        # point = self.waypoints_2d[closest_idx]
-        # prev_point = self.waypoints_2d[closest_idx-1]
-
-        # waypoint_vec = np.array(point) - np.array(prev_point)
-        # car_vec = np.array([x,y]) - np.array(point)
-
-        # val = np.dot(waypoint_vec, car_vec)
-
-        # if (val > 0):
-        #     closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-
         return closest_idx
 
     def get_light_state(self, light):
@@ -133,8 +154,7 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-
-        # Testing
+        
         return light.state
 
         # if(not self.has_image):
